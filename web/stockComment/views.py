@@ -2,8 +2,11 @@ from django.shortcuts import render
 
 # Create your views here.
 
-def modifyStockComment(request):
-    return render(request, 'stockComment/modifyStockComment.html')
+def modifyComment(request):
+    return render(request, 'stockPost/detailStockPost.html')
 
-def writeStockComment(request):
-    return render(request, 'stockComment/writeStockComment.html')
+def writeComment(request):
+    return render(request, 'stockPost/detailStockPost.html')
+
+def delComment(request):
+    return render(request, 'stockPost/detailStockPost.html')

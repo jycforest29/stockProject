@@ -10,3 +10,12 @@ def signIn(request):
 
 def signOut(request):
     return render(request, 'user/signIn.html')
+
+def detailMyPage(request):
+    return render(request, 'user/detailMyPage.html')
+
+def editMyPage(request):
+    return render(request, 'user/editMyPage.html')
+
+def evaluate(request):
+    return render(request, 'user/evaluate.html')
