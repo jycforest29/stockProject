@@ -11,9 +11,13 @@ def signIn(request):
 def signOut(request):
     return render(request, 'user/signIn.html')
 
+# detailMyPage.html
+# 유저 정보, 좋아요 누른 주식 정보 제공
 def detailMyPage(request):
     return render(request, 'user/detailMyPage.html')
 
+# editMyPage.html
+# 유저 정보, 좋아요 누른 주식 정보 수정 가능
 def editMyPage(request):
     return render(request, 'user/editMyPage.html')
 
