@@ -1,22 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
 </head>
-<body> 
-    <a href="{% url 'signIn' %}">로그인</a>
-    <a href="{% url 'signOut' %}">닉네임님 로그아웃</a><br>
-    <a href="{% url 'evaluate' %}">오늘 나의 포트폴리오 확인</a>
-    ------------------------------------------<br>
-    <a href="{% url 'detailStockPost' %}">거래량순</a> - 고정
-    <a href="{% url 'detailStockPost' %}">좋아요 거래량순</a><br> - 거래량순, 수익률순으로 필터 조정 가능
-    거래량 급증이면 하이라이트
-    ------------------------------------------<br>
-    현재 주요지수 : 코스피 - <kospi_total> 나스닥 - <nasdaq> 
-    좋아요 : <kospi_likes>
-    각 지수 비교하는 그래프도 제공
+<body>
+   <a href="{% url 'detailStockPost' %}">주식 분석 이동</a>
 </body>
 </html>
