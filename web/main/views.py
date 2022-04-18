@@ -1,19 +1,37 @@
+from tabnanny import check
+from django.http import Http404
 from django.shortcuts import render
+from numpy import record
 import pandas as pd
 import yfinance as yf
 import matplotlib.pyplot as plt
-import mpld3
-
-# koreaStock.csv
-columnNames = ['단축코드', '한글 종목명', '상장일', '액면가', '상장주식수']
-koreaStockDf = pd.read_csv('src/koreaStock.csv', encoding='cp949', usecols = columnNames)
+from datetime import date, datetime
+import pymysql
+import csv
 
 # index.html
-# 주식 검색기능 - 단어 포함, 주식 이름으로만 검색 
-# 좋아요 한 주식의 코스피 대비 상승폭(어제), 동일 업종 대비 상승폭(평균)
-def search():
+# 동일섹터 포함된 자료 -> mysql에 넣기 및 연동 -> search 함수 구현 -> check_start 함수 구현 -> 코스피 대비 상승폭, 동일 업종 대비 상승폭 구현 -> 검색어 자동완성
+def csv_to_mysql():
     pass
+
+def search(request):
+    if request.method == 'GET':
+        keyword = request.GET.get('keyword')
+    else:
+        raise Http404('검색 엔진 메서드 에러')
+    return render(request, 'main/search.html', {'keyword':keyword})
+
+def check_start():
+    y = datetime.now().year
+    m = datetime.now().month
+    d = datetime.now().day-1
+    return str(y)+'-'+str(m)+'-'+str(d)
 
 # Create your views here.
 def index(request):
-    return render(request, 'main/index.html') 
+    likes = ['005930']
+    compare_to_kospi = []
+    compare_to_sector = []
+    for i in likes:
+        compare_to_kospi.append((yf.download(i+'.KS', start = check_start()))['Adj Close'])
+    return render(request, 'main/index.html', {'compare_to_kospi':compare_to_kospi, 'compare_to_sector':compare_to_sector}) 

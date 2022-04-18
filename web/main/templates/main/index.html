@@ -5,8 +5,23 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Document</title>
+   <style>
+      div{
+         display: inline-block;
+      }
+   </style>
 </head>
 <body>
-   <a href="{% url 'detailStockPost' %}">주식 분석 이동</a>
+   <form action="{% url 'search' %}" method="get">
+      <div class="searchTitle">
+         주식 검색: 
+      </div>
+      <div class = "input">
+         <input type="text" name = "keyword">
+      </div>
+      <div class="button">
+         <button>검색</button>
+      </div>
+   </form>
 </body>
 </html>
