@@ -27,7 +27,7 @@ def load_data(start):
     kospiIndex = yf.download('^KS11', interval='1d', start = start)['Adj Close']
     keywordIndex = yf.download('005930.KS', interval='1d', start = start)[['Adj Close', 'Volume']]
 
-def detailStockPost(request):
+def detailPost(request):
     global dataLoaded
     start = '2019-04-09'
     if not dataLoaded:
@@ -53,4 +53,4 @@ def detailStockPost(request):
 
     plt.savefig('src/plt_data.png', dpi = 100)
 
-    return render(request, 'stockPost/detailStockPost.html')
+    return render(request, 'post/detailPost.html')

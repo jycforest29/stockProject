@@ -2,6 +2,6 @@ from django.shortcuts import render
 
 # Create your views here.
 
-def detailanalystPost(request):
-    return render(request, 'analysPost/detailanalystPost.html')
+def analystPost(request):
+    return render(request, 'analyst/analystPost.html')
  

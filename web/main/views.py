@@ -10,7 +10,7 @@ import pymysql
 import csv
 
 # index.html
-# 동일섹터 포함된 자료 -> mysql에 넣기 및 연동 -> search 함수 구현 -> check_start 함수 구현 -> 코스피 대비 상승폭, 동일 업종 대비 상승폭 구현 -> 검색어 자동완성
+# mysql에 넣기 및 연동 -> search 함수 구현 -> check_start 함수 구현 -> 코스피 대비 상승폭, 동일 업종 대비 상승폭 구현 -> 검색어 자동완성
 def csv_to_mysql():
     pass
 

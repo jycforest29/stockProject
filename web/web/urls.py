@@ -20,8 +20,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls')),
     path('user/', include('user.urls')),
-    path('stockPost/', include('stockPost.urls')),
-    path('analystPost/', include('analystPost.urls')),
-    path('newsPost/', include('newsPost.urls')),
-    path('stockComment/', include('stockComment.urls')),
+    path('post/', include('post.urls')),
+    path('comment/', include('comment.urls')),
+    path('analyst/', include('analyst.urls')),
+    path('news/', include('news.urls')),
 ]

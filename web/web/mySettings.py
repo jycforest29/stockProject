@@ -1,7 +1,7 @@
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'stockKr',
+        'NAME': 'stockProject',
         'USER': 'root',
         'PASSWORD':'jycforest',
         'HOST':'localhost',
