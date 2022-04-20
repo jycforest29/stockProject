@@ -12,7 +12,7 @@ import numpy as np
 import mpld3
 import datetime as dt
 
-# 액면가가 무액면이거나 1 이하일 경우 0으로 데이터 전처리 -> 그대로 나타내야
+# 액면가가 무액면이거나 1 이하일 경우 0으로 데이터 전처리 -> 그대로 나타내야(모델 필드 수정)
 def checkPerValue(perValue):
     try:
         int(perValue) > 1
@@ -109,8 +109,6 @@ def compareToKospiFunc(likeStocks):
 # Create your views here.
 def index(request):
     # initSetting()
-
-    # 수익률
-    # profit = 
-    
+    # likeStokcs = []
+    # compareToKospiFunc
     return render(request, 'main/index.html')
