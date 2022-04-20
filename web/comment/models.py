@@ -10,4 +10,4 @@ class Comment(models.Model):
     commenter = models.ForeignKey(User, on_delete=models.CASCADE, related_name="commentCommenter")
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
-    likeUser = models.ForeignKey(User, on_delete=models.CASCADE, related_name="commentLikeUser")
+    likeUsers = models.ForeignKey(User, on_delete=models.CASCADE, related_name="commentLikeUsers", null = True)

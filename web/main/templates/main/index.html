@@ -15,7 +15,7 @@
    <form action="{% url 'search' %}" method="get">
       <div class="searchTitle">
          주식 검색: 
-      </div>
+      </div> 
       <div class = "input">
          <input type="text" name = "keyword">
       </div>
@@ -23,5 +23,18 @@
          <button>검색</button>
       </div>
    </form>
+   <a href="{% url 'signIn' %}">로그인</a><br>
+   <a href="{% url 'signOut' %}">로그아웃</a><br>
+   <a href="{% url 'detailMyPage' %}">마이페이지</a><br>
+   /오늘 나의 수익률: {{profit}}<br>
+   내가 좋아요 한 주식들<br>
+   {% if likeStocks %}
+      {% for stock in likeStocks %}
+         {{stock.stockName}}<br>
+         {{stock.stockCode}}
+      {% endfor %}
+   {% endif %}
+   /좋아요 한 주식들의 그래프
 </body>
 </html>
+

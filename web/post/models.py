@@ -8,4 +8,4 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="postAuthor")
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now=True)
-    likeUser = models.ForeignKey(User, on_delete=models.CASCADE, related_name="postLikeUser")
+    likeUsers = models.ForeignKey(User, on_delete=models.CASCADE, related_name="postLikeUsers", null = True)

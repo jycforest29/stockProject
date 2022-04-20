@@ -42,8 +42,7 @@ INSTALLED_APPS = [
     'user',
     'post',
     'comment',
-    'analyst',
-    'news',
+    'stock',
 ]
 
 MIDDLEWARE = [
