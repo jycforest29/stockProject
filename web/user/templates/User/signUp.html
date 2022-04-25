@@ -7,10 +7,16 @@
     <title>Document</title>
 </head>
 <body>
-    닉네임
-    이메일 - 인증도 할거임
-    비밀번호
-    비밀번호 확인
-    회원가입 버튼
+    <form action="{% url 'signUp' %}" method = "POST">
+        {% csrf_token %}
+
+        {% for field in form %}
+            {{field.label}}: {{field}}<br>
+            {% if field.errors %}
+            {{field.errors}}
+            {% endif %}
+        {% endfor %}
+        <button>회원가입</button>
+    </form>
 </body>
 </html>

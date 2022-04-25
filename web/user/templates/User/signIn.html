@@ -7,9 +7,16 @@
     <title>Document</title>
 </head>
 <body>
-    이메일
-    비밀번호
-    로그인 버튼
-    회원가입 링크
+    <form action="{% url 'signIn' %}" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            {{field.label}}: {{field}}<br>
+            {% if field.errors %}
+            {{field.errors}}
+            {% endif %}
+        {% endfor %}
+        <button>로그인</button><br>    
+    </form>
+    <a href="{% url 'signUp' %}">회원가입 링크</a>    
 </body>
 </html>

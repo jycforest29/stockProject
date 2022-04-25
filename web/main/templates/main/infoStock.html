@@ -5,6 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        div{
+           display: inline-block;
+        }
+     </style>
+     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 </head>
 <body>
     {% if stockData %}
@@ -12,27 +18,51 @@
         주식 이름: {{stockData.stockName}}<br>
         상장일: {{stockData.ipoDate}}<br>
         상장시장종류: {{stockData.kospi}}<br>
-        액면가: {{stockData.perValue}}<br>
-        상장주식수: {{stockData.stockNum}}(주)
+        액면가: {{stockData.perValue}}원<br>
+        상장주식수: {{stockData.stockNum}}주
+
+        {% if user.is_authenticated %}
         <form action="{% url 'stockLike' stockData.stockCode %}" method="POST">
+            {% csrf_token %}
+            {% if userInStock %}
+            <button>삭제</button>
+            {% else %}
             <button>추가</button>
+            {% endif %}
         </form>
+        {% else %}
+        <form>
+            <button onclick="addAlert()">추가</button>
+        </form>
+        <script>
+            addAlert = () => {
+                alert('로그인 후 이용가능');
+            }
+        </script>
+        {% endif %}        
+        
         <div>
-            분석 시작 날짜<br>
+            <br>
             <form action="{% url 'priceStock' stockData.stockCode %}" method="POST">
                 {% csrf_token %}
-                <input type="date" name="start">
+                <div>
+                    <input type="date" name="start" min = "{{startDate}}", max = "{{endDate}}", defaultValue = "{{endDate}}">
+                    <div id="type">
+                        <label>거래량 <input type="checkbox" name="checkbox1" id="checkbox1"></label>
+                        <label>종가<input type="checkbox" name="checkbox2" id="checkbox2"></label>
+                        <label>코스피<input type="checkbox" name="checkbox3" id="checkbox3"></label>
+                    </div>
+                </div>
                 <button>분석</button>
             </form>
-            /분석 종류 필터
-            /분석 결과
-            /애널리스트 분석 보고서 있을 경우 같이 제공
-        </div>
-
-        <div>
-            관련 종목게시판 글: 
+            <br>
+            {% if recommendations %}
+            {{recommendations}}
+            {% endif %}
         </div>
     {% endif %}
     
 </body>
 </html>
+
+

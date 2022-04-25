@@ -5,11 +5,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        a{
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
     {% if keyword %}
         {% if searchResults %}
             {% for result in searchResults %}
+
             <a href="{% url 'infoStock' result.stockCode %}">{{result.stockName}}</a>({{result.stockCode}}) {{result.kospi}}<br>
             {% endfor %}
         {% else %}

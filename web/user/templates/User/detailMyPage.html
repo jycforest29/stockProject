@@ -7,10 +7,15 @@
     <title>Document</title>
 </head>
 <body>
-    닉네임 - 변경 가능
-    이메일 - 변경 가능, 또 인증해야
-    비밀번호 
-    현재 수익률
-    유저의 현재 유형
+    {{request.user.username}}<br>
+    {{request.user.email}}<br>
+    {{request.user.strategy}}<br>
+
+    {% for stock in likeStockList %}
+    {{stock.stockName}}({{stock.stockCode}})<br>
+    {% endfor %}
+
+    현재 수익률<br>
+
 </body>
 </html>
