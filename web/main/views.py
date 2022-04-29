@@ -1,32 +1,23 @@
 from django.http import Http404
-from django.shortcuts import render, redirect
-from numpy import index_exp
+from django.shortcuts import render
 import pandas as pd
 import yfinance as yf
 import matplotlib.pyplot as plt
-from datetime import date, datetime
 from stock.models import Stock
+from post.models import Post
 from django.db.models import Q
-import math
-import numpy as np
 import mpld3
 import datetime as dt
 from sklearn import preprocessing
-from user.models import User
-
-# 글, 댓글 - 글은 해당 주식, 주식에 대한 의견 / 각 주식별 인기글 - index.html에 많으면 ->으로 넘기기 / 글, 댓글 모두 유저 타입 보여주기, 각 글과 댓글별 퍼센트 보여주기
-# 유저 마이페이지, 마이페이지 수정 완성, 포트폴리오 - 평균 수익(각 타입의 유저별 평균 수익은 이렇다)
-# 그래프들 js로 팝업 띄우기/ 애널리스트 분석도 같이 그래프에 넣기
-
-buyType = ['Buy', 'Outperform',  'Overweight']
-holdType = ['Hold', 'Neutral', 'Market Perform', 'Sector Perform', 'Peer Perform']
-sellType = ['Sell', 'Underperform']
-idxList = []
-idxName = []
-
+from stock.views import searchTop5
+# 실검-하루지나면 초기화/이메일 인증/포트폴리오(미완)/애널리스트 분석도 같이 그래프에 넣기/글 댓글 수정
+# js - 대댓글/팝업/검색어 자동완성/뒤로가기 버튼/페이징
+searchTop5 = searchTop5
+# ipoDate를 date 형식으로 db에 저장하기 위해 형식 변환
 def setDateFormat(ipoDate):
     return ipoDate.replace('/', '-', 2)
 
+# krx에서 다운받은 한국 주식 정보를 db에 저장(프로그램 초기 실행 한번만 호출)
 def initSetting():
     df = pd.read_csv('src/krStock.csv', encoding='cp949')
     for i in range(df.shape[0]):
@@ -39,6 +30,7 @@ def initSetting():
             stockNum = df.loc[i][11]
         )
 
+# 주식 검색(종목명, 종목 코드로 검색 가능)
 def search(request):
     if request.method == 'GET':
         keyword = request.GET.get('keyword')
@@ -47,178 +39,101 @@ def search(request):
     else:
         raise Http404('검색 엔진 메서드 에러')
 
-# df로 합치고 0 제거
-def removeZeroData(*s):    
-    df = pd.DataFrame()
-    for i in range(len(s)):
-        df['s'+str(i)] = s[i]
-
-    df = df.loc[df.s1 !=0]
-    # df = df.drop(index=df.loc[df.s2 == 0].index) 
-    return df
-
-# df -> tmp안의 시리즈 배열 -> 각 시리즈를 df로 변환, 데이터 전처리 후 이 배열 리턴
-def arrangeIndexData(df):
-    tmp = []        
-    maxAbsScaler = preprocessing.MaxAbsScaler()
-
-    for i in range(df.shape[1]):
-        tmp.append(df['s'+str(i)])
-        # df[:, i] = minMaxScaler.fit_transform(df[:, i])
-
-    # print(type(tmp[i])) => 시리즈
-    # df
-    for i in range(len(tmp)):
-        dfTmp = pd.DataFrame(tmp[i])
-        # s0등 존재
-        # print(dfTmp)
-        tmp[i] = maxAbsScaler.fit_transform(dfTmp)
-    # array
-    # print(tmp)
-    # for i in range(df.shape[1]):
-    #     tmp.append(df.iloc[:, i])
-    return tmp
-
-# /데이터 정제
-def returnRecommendation(stockCode):
-    recommendations = yf.Ticker(stockCode).recommendations
-    return recommendations
-
-def indexAnalysis(checkbox, stockCode, start):
-    global idxList, idxName    
-    priceTmp = yf.download(stockCode+'.KS', start = start)[['Adj Close', 'Volume']]
-    kospi = yf.download('^KS11', start = start)['Adj Close']
-    adjClose = priceTmp['Adj Close']
-    volume = priceTmp['Volume']
-
-    idxList = arrangeIndexData(removeZeroData(adjClose, volume, kospi))
-    idxName = ['adj' ,'vol', 'kospi']
-
-    idxListTmp = idxList[:]
-    idxNameTmp = idxName[:]
-
-    i = 0
-    j = 0
-    while i < 3:
-        if checkbox[j] == None:
-            del idxListTmp[j]
-            del idxNameTmp[j]
-        else:
-            j += 1
-        i += 1
+# 사용자가 좋아요한 주식별 타유저들의 타입을 분류해서 반환
+def findStockType(likes):
+    high = []
+    mid = []
+    low = []
+    typeList = [high, mid, low]
+    # 쿼리셋은 for문으로 접근 가능
     
-    recommendations = returnRecommendation(stockCode)   
+    for i in likes:
+        highNum = 0
+        midNum = 0
+        lowNum = 0        
+        if i.likeUsers.all() is not None:
+            for j in i.likeUsers.all():
+                if j.strategy == '위험형':
+                    highNum += 1 
+                elif j.strategy == '중립형':
+                    midNum += 1
+                else:
+                    lowNum += 1    
+            typeNum = [highNum, midNum, lowNum]
+            typeList[typeNum.index(max(typeNum))].append(i)   
+    return high, mid, low
 
-    # /팝업창으로 띄우기
-    fig = plt.figure()
-    for i in idxListTmp:
-        plt.plot(i)
-    plt.xlabel('date')
-    plt.ylabel('index')
-    plt.legend()
-    htmlTmp = mpld3.fig_to_html(fig)
-    htmlFile = open("main/templates/main/indexResult.html", "w")
-    htmlFile.write(htmlTmp)
-    htmlFile.close()
-    
-    idxListTmp = idxList
-    idxNameTmp = idxName
-
-def priceStock(request, stockCode):    
-    if request.method == 'POST':
-        start = request.POST.get('start')
-        checkbox1 = request.POST.get('checkbox1')
-        checkbox2 = request.POST.get('checkbox2')
-        checkbox3 = request.POST.get('checkbox3')
-        indexAnalysis([checkbox1, checkbox2, checkbox3], stockCode, start)
-        return render(request, 'main/indexResult.html')
-    else:
-        raise Http404('가격 조회 메서드 에러')
-
-def infoStock(request, stockCode):
-    stockData = Stock.objects.get(stockCode = stockCode)
-    startDate = stockData.ipoDate.strftime("%Y-%m-%d")
-    endDate = (dt.date.today()-dt.timedelta(days = 1)).strftime("%Y-%m-%d")
-    userInStock = False
-    if request.user in stockData.likeUsers.all():
-        userInStock = True
-
-    # /관련 종목 게시판 글
-    return render(request, 'main/infoStock.html', {'stockData':stockData, 'startDate':startDate, 'endDate':endDate, 'userInStock':userInStock})
-
-def stockLike(request, stockCode):
-    stock = Stock.objects.get(stockCode = stockCode)
-    if request.user in stock.likeUsers.all():
-        stock.likeUsers.remove(request.user)
-        stock.likeCount -= 1
-    else:
-        stock.likeUsers.add(request.user)
-        stock.likeCount += 1
-    stock.save()
-    return redirect('infoStock', stockCode)
-
-def compareToKospiFunc(likeStocks):
+# 좋아요한 주식들이 전날과 비교해 코스피 대비 얼마나 변화가 있었는지 나타내는 함수
+def likeStockAnalysis(likes):
     i = 1
-    kospiList = []
-    likeStocksList = []
-    likeStocksBefore = []
-    likeStocksAfter = []
-    likeResult = []
+    kospi = 0
+    likesResult = []
+    likesBefore = []
+    likesAfter = []
+    likesName = []
 
+    # 현재 날짜로부터 yf로부터 주가 데이터를 갖고올 수 있는 가장 빠른 날짜와 그 전날 날짜를 찾음(주말 제외 포함)
     while True:
-        # 목금월/금월화 케이스 고려 안됨
+        # /목금월/금월화 케이스 고려 안됨
         start = dt.date.today()-dt.timedelta(days = i+2)
         mid = dt.date.today()-dt.timedelta(days = i+1)
         end = dt.date.today()-dt.timedelta(days = i)
         kospiBefore = yf.download('^KS11', start = start, end = mid)['Adj Close']
         kospiAfter = yf.download('^KS11', start = mid, end = end)['Adj Close']
-        if kospiBefore.size and kospiAfter.size != 0:
+        if kospiBefore.size != 0 and kospiAfter.size != 0:
             break
         i += 1
-    
-    for i in likeStocks:
-        likeStocksBefore.append(yf.download(i.stockCode+'.KS', start = start, end = mid)['Adj Close'])
-        likeStocksAfter.append(yf.download(i.stockCode+'.KS', start = mid, end = end)['Adj Close'])
 
-    maxAbsScaler = preprocessing.MaxAbsScaler()
-    # df = pd.DataFrame()
-    # # Reshape your data either using array.reshape(-1, 1) if your data has a single feature or array.reshape(1, -1) if it contains a single sample.
-    # df['s0'] = kospi
-    # for i in range(1, len(likeStocksTmp)):
-    #     df['s'+str(i)] = likeStocksTmp[i-1]
-    # # likeResult = [0, 1, 2, 3,4 ,5]
-    # fig = plt.figure()
-    # plt.plot(df[['s0']])
-    # # j = 0.00
-    # # for i in range(1, len(likeResult)):
-    # #     j += 0.1//len(likeResult)
-    # #     plt.scatter(j, likeResult[i])
-    # plt.ylabel('index')
-    # plt.legend()
-    # htmlTmp = mpld3.fig_to_html(fig)
-    # htmlFile = open("main/templates/main/index.html", "a")
-    # htmlFile.write(htmlTmp)
-    # htmlFile.close()
+    # 각 날짜들에 맞는 데이터 다운로드, 변화 정도로 값 변환
+    kospi = 100*round((kospiAfter[0] - kospiBefore.iloc[0])/(kospiBefore[0]), 2)    
+    for i in likes:
+        likesBefore.append(yf.download(i.stockCode+'.KS', start = start, end = mid)['Adj Close'])
+        likesAfter.append(yf.download(i.stockCode+'.KS', start = mid, end = end)['Adj Close'])
+        likesName.append(i.stockName)
+    for i in range(len(likesAfter)):
+        likesResult.append(100*round( (likesAfter[i][0] - likesBefore[i][0])/likesBefore[i][0] , 2))
 
-# def checkColumnValue(df):
-#     global buyType, sellType
-#     # ['', 'Buy', 'Hold', 'Neutral', 'Outperform', 'Underperform', 'Market Perform', 'Sector Perform', 'Sell', 'Overweight', 'Peer Perform']
-#     tmp = []
-#     for i in range(df.shape[0]):
-#         if df[i] not in tmp:
-#             tmp.append(df[i])
+    # 데이터 시각화
+    fig = plt.figure(figsize=[11, 5])
+    plt.hlines(kospi, xmin = 0.0, xmax = 1.0)
+    plt.xlim(0.0, 1.0)
+    plt.ylim(-100, 100)
+    j = 0
+    for i in range(len(likesResult)):
+        j += 0.9/len(likesResult)
+        if likesResult[i] < 0:
+            plt.scatter(j, likesResult[i], c = "blue")
+        elif likesResult[i] > 0:
+            plt.scatter(j, likesResult[i], c = "red")
+        else: 
+            plt.scatter(j, likesResult[i], c = "cyan")
+        plt.annotate(text = likesName[i]+'('+str(likesResult[i])+'%'+')', xy = (j, likesResult[i]))    
+    plt.ylabel('%')
+    plt.legend()
+    htmlTmp = mpld3.fig_to_html(fig)
+    htmlFile = open("main/templates/main/indexResult.html", "w")
+    htmlFile.write(htmlTmp)
+    htmlFile.close() 
 
-
-# Create your views here.
 def index(request):
     # initSetting()
     # recommendations = yf.Ticker('JPM').recommendations
     # recommendations = recommendations.iloc[:, 2]
+
+    # 5분 단위로 검색량이 가장 많은 주식 5개 찾음
+    global searchTop5
+    topStocks = []
+    tmp = []
+    tmp = sorted(searchTop5.items(), key = lambda item: item[1], reverse = True)[:5]
+    for i in tmp:
+        stock = Stock.objects.get(stockName = i[0])
+        topStocks.append(stock)
+    
     stockRanking = Stock.objects.filter(likeCount__gte = 1).order_by('likeCount')
-    # allowed field?
     likeStocks = None
     if request.user:
-        likeStocks = Stock.objects.filter(likeUsers__in = [request.user]).order_by('likeCount')
-        compareToKospiFunc(likeStocks)
-    # checkColumnValue(recommendations)   
-    return render(request, 'main/index.html', {'stockRanking':stockRanking, 'likeStocks':likeStocks})
+        # 왜 pk로 바꾸니까 된거지?
+        likeStocks = Stock.objects.filter(likeUsers__in = [request.user.pk]).order_by('likeCount')
+        highStocks, midStocks, lowStocks = findStockType(likeStocks)
+        # compareToKospiFunc(likeStocks)
+    return render(request, 'main/index.html', {'stockRanking':stockRanking, 'highStocks':highStocks,'midStocks':midStocks,'lowStocks':lowStocks, 'topStocks':topStocks}) 
