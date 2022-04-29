@@ -22,11 +22,12 @@
         상장주식수: {{stockData.stockNum}}주
 
         {% if user.is_authenticated %}
+        {{stockData.likeCount}}
         <form action="{% url 'stockLike' stockData.stockCode %}" method="POST">
             {% csrf_token %}
             {% if userInStock %}
-            <button>삭제</button>
-            {% else %}
+            <button>삭제</button>  
+            {% else %} 
             <button>추가</button>
             {% endif %}
         </form>
@@ -43,7 +44,7 @@
         
         <div>
             <br>
-            <form action="{% url 'priceStock' stockData.stockCode %}" method="POST">
+            <form action="{% url 'stockAnalysis' stockData.stockCode %}" method="POST">
                 {% csrf_token %}
                 <div>
                     <input type="date" name="start" min = "{{startDate}}", max = "{{endDate}}", defaultValue = "{{endDate}}">
@@ -58,6 +59,21 @@
             <br>
             {% if recommendations %}
             {{recommendations}}
+            {% endif %}
+        </div>
+        <t>
+        {{strategyText}}<br>
+        인기글<br>
+        {% for post in topPosts %}
+        <a href="{% url 'detailPost' post.pk %}">{{post.title}}[{{post.commentCount}}] {{post.likeCount}}</a><br>
+        {% endfor %}
+        전체글<br>
+        <div>
+            <a href="{% url 'newPost' stockData.stockCode %}"><button>글쓰기</button></a><br>            
+            {% if posts %} 
+            {% for post in posts %}
+            <a href="{% url 'detailPost' post.pk %}">{{post.title}}</a>[{{post.commentCount}}]<br>            
+            {% endfor %}
             {% endif %}
         </div>
     {% endif %}

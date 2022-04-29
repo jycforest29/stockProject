@@ -15,8 +15,7 @@
     {% if keyword %}
         {% if searchResults %}
             {% for result in searchResults %}
-
-            <a href="{% url 'infoStock' result.stockCode %}">{{result.stockName}}</a>({{result.stockCode}}) {{result.kospi}}<br>
+            <a href="{% url 'stockInfo' result.stockCode %}">{{result.stockName}}</a>({{result.stockCode}}) {{result.kospi}}<br>
             {% endfor %}
         {% else %}
             검색 결과가 없습니다

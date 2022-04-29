@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!-- 글 -->
+  <!-- 글 내용 -->
+  주식: {{post.stock.stockName}}<br>
+  제목: {{post.title}}<br>
+  작성자: {{post.author}}<br>
+  작성자 타입: {{post.author.strategy}}<br>
+  {% if post.createdAt == post.updatedAt %}
+  작성일자: {{post.createdAt}}
+  {% else %}
+  수정일자: {{post.updatedAt}}({{post.createdAt}})
+  {% endif %}<br>
+  내용: {{post.content}}<br>
+  매수/중립/매도: {{post.strategy}}<br>
+
+  <!-- 글쓴이와 로그인한 유저가 같을 때 -->
+  {% if post.author == request.user %}    
+    <a href="{% url 'editPost' post.pk %}">수정</a>
+    <a href="{% url 'deletePost' post.pk post.stock.stockCode %}">삭제</a><br>  
+  <!-- 글쓴이와 로그인한 유저가 다를 때 -->
+  {% else %}
+    <form action="{% url 'likePost' post.pk %}" method="post">
+      {% csrf_token %}
+      {% if userInPostLikes %} 
+      <button>좋아요 취소</button> {{post.likeCount}}
+      {% else %}
+      <button>좋아요</button> {{post.likeCount}}
+      {% endif %}
+    </form>
+  {% endif %}<br>
+  
+  <!-- 댓글 -->
+  <!-- 댓글 작성 폼 -->
+  {% if commentForm %}
+  <form action="{% url 'newComment' post.pk %}" method="post">
+    {% csrf_token %}
+    {% for field in commentForm %}
+        {{field.label}}: {{field}}<br>
+        {% if field.errors %}
+        {{field.errors}}
+        {% endif %} 
+    {% endfor %}
+    <button>작성</button>
+  </form>
+  {% endif %}
+  
+  <!-- 댓글들 -->
+  {% for comment in comments %}
+    {% if comment.author == request.user %}
+    글 작성자
+    {% else %}
+    {{comment.author}}
+    {% endif %}
+    ({{comment.author.strategy}})
+    {% if comment.createdAt == comment.updatedAt %}
+    {{comment.createdAt}}
+    {% else %}
+    {{comment.updatedAt}}({{comment.createdAt}})
+    {% endif %}<br>
+    내용: {{comment.content}}<br>
+
+    {% if comment.author == request.user %}
+      {% if editForm %}
+      <form action="{% url 'editComment' comment.pk post.pk %}" method="post">
+        {% csrf_token %}
+        {% for field in editForm %}
+            {{field.label}}: {{field}}<br>
+            {% if field.errors %}
+            {{field.errors}}
+            {% endif %}
+        {% endfor %}
+        <button>수정</button>
+      </form>
+      {% else %}
+      <a href="{% url 'editComment' comment.pk post.pk %}">수정</a>
+      <a href="{% url 'deleteComment' comment.pk post.pk %}">삭제</a>      
+      {% endif %}
+    {% else %}
+    <form action="{% url 'likeComment' comment.pk %}" method="post">
+      {% csrf_token %}
+      <button>좋아요</button> {{comment.likeCount}}
+    </form>
+    {% endif %}
+    <a href="{% url 'reComment' comment.pk post.pk %}">대댓글</a><br>
+  {% endfor %}
+</body>
+</html>

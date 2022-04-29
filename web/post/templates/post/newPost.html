@@ -7,16 +7,15 @@
     <title>Document</title>
 </head>
 <body>
-    아이디: {{request.user.username}}<br>
-    <form action="{% url 'editMyPage' %}" method="post">
+    <form action="{% url 'newPost' stockCode %}" method="post">
         {% csrf_token %}
-        {% for field in myPageForm %}
+        {% for field in postform %}
             {{field.label}}: {{field}}<br>
             {% if field.errors %}
             {{field.errors}}
             {% endif %}
         {% endfor %}
-        <button>수정</button>    
+        <button>작성</button>
     </form>
 </body>
 </html>

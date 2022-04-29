@@ -7,15 +7,9 @@
     <title>Document</title>
 </head>
 <body>
-    {{request.user.username}}<br>
-    {{request.user.email}}<br>
-    {{request.user.strategy}}<br>
-
-    {% for stock in likeStockList %}
-    {{stock.stockName}}({{stock.stockCode}})<br>
-    {% endfor %}
-
-    현재 수익률<br>
-
+    아이디: {{request.user.username}}<br>
+    이메일: {{request.user.email}}<br>
+    타입: {{request.user.strategy}}<br>    
+    <a href="{% url 'editMyPage' %}">수정</a>
 </body>
 </html>

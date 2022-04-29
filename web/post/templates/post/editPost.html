@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="{% url 'editPost' post.pk %}" method="post">
+        {% csrf_token %}
+        주식: {{post.stock.stockName}}<br> 
+        {% for field in editForm %}
+            {{field.label}}: {{field}} <br>
+            {% if field.errors %}
+            {{field.errors}}
+            {% endif %}
+        {% endfor %}
+        작성자: {{post.author}}<br> 
+        작성자 타입: {{post.author.strategy}}<br>
+        {% if post.createdAt == post.updatedAt %}
+        작성일자: {{post.createdAt}}
+        {% else %}
+        수정일자: {{post.updatedAt}}({{post.createdAt}})
+        {% endif %}<br>
+        <button>수정</button>
+    </form>
+</body>
+</html>
