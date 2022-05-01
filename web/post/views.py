@@ -18,7 +18,7 @@ def detailPost(request, postPk):
     comments = Comment.objects.filter(post = post)
     if post.likeCount != 0:
         if request.user in post.likeUsers.all():
-            userInPostLikes = True
+            userInPostLikes = True 
     return render(request, 'post/detailPost.html', {'post':post, 'userInPostLikes':userInPostLikes, 'commentForm':commentForm, 'comments':comments})
 
 def newPost(request, stockCode):

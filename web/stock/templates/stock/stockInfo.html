@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        div{
+           display: inline-block;
+        }
+        a, a:visited, a:hover, a:active {
+            text-decoration: none;
+            color: inherit;
+        }
+        .other{
+            background-color:ffffff;
+            width: 55px;
+            height: 35px;
+            border: 1px solid rgb(103, 158, 195);
+            border-radius:11px;
+        }
+        .other:hover{
+            background-color:rgb(103, 158, 195);
+        }
+        #searchBar{
+         margin-top: 36px;
+         margin-left: 550px;
+        }
+        #searchBarHr{
+         margin-left: 250px;
+         margin-top: 30px;
+         width: 1000px;
+         border: 1px solid rgb(25, 120, 184);
+        }  
+        #input{
+            width: 300px;
+            height: 29px;
+            border-radius: 5px;
+        }
+        #search{
+            background-color:rgb(103, 158, 195);
+            width: 55px;
+            height: 35px;
+            border: 1px solid rgb(103, 158, 195);
+            border-radius:11px;
+        }
+        #title{
+            font-size: x-large;
+        }
+        #container{
+            margin-top: 30px;
+            margin-left: 300px;
+            display: flex;
+            padding: 11px; 
+            width: 900px;        
+        }
+        #sinfo{
+            flex: 0.3; 
+        }
+        #spostsTop{         
+            flex: 0.3;  
+        }
+        #spostsAll{         
+            flex: 0.3;  
+        }
+        #sanalysis{            
+            margin-top: 50px;
+            margin-left: 400px;
+            border: 3px solid rgb(148, 196, 212);
+            border-radius: 5px;
+            width: 700px;
+            height: 50px;
+            text-align: center;
+        }
+     </style>
+</head>
+<body>
+    {% include 'main/mainBar.html' %}
+    <form action="{% url 'search' %}" method="get">
+        <div id="searchBar">
+           <input type="text" id = "input" name = "keyword" value = "{{keyword|default_if_none:''}}"> 
+           <button id="search">검색</button>
+        </div>
+     </form>   
+    <hr id = "searchBarHr">
+    <div id="container"> 
+        <div id = "sinfo">
+            <span id = "title">기업정보</span><br>
+            종목명: {{stockData.stockName}}<br>
+            종목코드: {{stockData.stockCode}}<br>
+            상장일: {{stockData.ipoDate}}<br>
+            액면가: {{stockData.perValue}}원<br>
+            상장주식수: {{stockData.stockNum}}주
+            {% if user.is_authenticated %}
+            <form action="{% url 'stockLike' stockData.stockCode %}" method="POST">
+                {% csrf_token %}
+                {% if userInStock %}
+                <button>삭제</button>  
+                {% else %}  
+                <button>추가</button>
+                {% endif %}
+            </form>
+            {% else %}
+            <form>
+                <button onclick="addAlert()" class = "other">추가</button>
+            </form>
+            <script>
+                addAlert = () => {
+                    alert('로그인 후 이용가능');
+                }
+            </script>
+            {% endif %}  
+            {{strategyText}}<br>      
+        </div><br>    
+        <div id = "spostsTop">
+            <span id="title">인기글</span><br>
+            {% for post in topPosts %}
+            <a href="{% url 'detailPost' post.pk %}">{{post.title}}[{{post.commentCount}}] {{post.likeCount}}</a><br>
+            {% endfor %}
+        </div>
+        <div id = "spostsAll">
+            <span id="title">전체글</span>
+            <a href="{% url 'newPost' stockData.stockCode %}"><button class = "other">글쓰기</button></a><br>            
+            {% if posts %} 
+            {% for post in posts %}
+            <a href="{% url 'detailPost' post.pk %}">{{post.title}}</a>[{{post.commentCount}}]<br>            
+            {% endfor %}
+            {% endif %}
+        </div><br>
+    </div>
+    
+    <div id = sanalysis> 
+        <form action="{% url 'stockAnalysis' stockData.stockCode %}" method="POST">
+            {% csrf_token %}
+            <div>
+                <input type="date" name="start" min = "{{startDate}}", max = "{{endDate}}", defaultValue = "{{endDate}}">
+                <div id="type">
+                    <label>거래량 <input type="checkbox" name="checkbox1" id="checkbox1"></label>
+                    <label>종가<input type="checkbox" name="checkbox2" id="checkbox2"></label>
+                    <label>코스피<input type="checkbox" name="checkbox3" id="checkbox3"></label>
+                    <!-- 영업이익 매출액 개인/기관/외국인 -->
+                </div>
+            </div>
+            <button class = "other">분석</button>
+        </form>
+        <br>
+        {% if recommendations %}
+        {{recommendations}}
+        {% endif %}
+    </div>    
+</body>
+</html>
+
+

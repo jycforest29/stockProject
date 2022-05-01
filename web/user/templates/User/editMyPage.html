@@ -5,18 +5,72 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        hr{
+            position: absolute;
+            top: 252px;
+            left: 576px;
+            width: 300px;
+            border: 0.5px solid black;
+        }
+        button{
+            background-color:rgb(145, 191, 222);
+            width: 49px;
+            height: 35px;
+
+            border-radius:11px;
+            margin-left: 100px;
+            margin-top:11px; 
+        }
+        .title{
+            position: absolute;
+            top: 216px;
+            left: 650px;
+            font-size: x-large;
+        }
+        .container{
+            position: absolute;
+            top: 275px;
+            left: 600px;
+            width: 300px;
+            /* border: 1px solid rgb(103, 158, 195); */
+            font-size: large;
+        }
+        .col{
+            margin-top: 5px;
+            text-align: right;
+            float: left;
+        }
+        .row{
+            margin-left: 8px;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
-    아이디: {{request.user.username}}<br>
+    {% include 'main/mainBar.html' %}
+    <span class = "title">회원정보 수정</span>
+    <hr>    
     <form action="{% url 'editMyPage' %}" method="post">
         {% csrf_token %}
-        {% for field in myPageForm %}
-            {{field.label}}: {{field}}<br>
-            {% if field.errors %}
-            {{field.errors}}
-            {% endif %}
-        {% endfor %}
-        <button>수정</button>    
+        <div class="container">
+            <div class = "col">
+                아이디<br>
+                {% for field in myPageForm %}
+                {{field.label}}<br>
+                {% endfor %}
+            </div>
+            <div class = "row">
+                {{request.user.username}}<br>
+                {% for field in myPageForm %}
+                {{field}}<br>
+                {% if field.errors %}
+                {{field.errors}}
+                {% endif %}
+                {% endfor %}
+            </div><br>
+            <button>수정</button>
+        </div>
     </form>
 </body>
 </html>

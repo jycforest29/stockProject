@@ -5,18 +5,84 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        hr{
+            position: absolute;
+            top: 252px;
+            left: 576px;
+            width: 300px;
+            border: 0.5px solid black;
+        }
+        button{
+            background-color:rgb(145, 191, 222);
+            width: 60px;
+            height: 35px;
+            border-radius:11px;
+            margin-left: 89px;
+            margin-top:40px; 
+        }
+        .title{
+            position: absolute;
+            top: 216px;
+            left: 675px;
+            font-size: x-large;
+        }
+        .container{
+            position: absolute;
+            top: 275px;
+            left: 600px;
+            width: 300px;
+            font-size: large;
+        }
+        .col{
+            margin-top: 5px;
+            text-align: right;
+            float: left;
+        }
+        .row{
+            margin-left: 8px;
+            text-align: left;
+        }
+        #signUpLink{
+            position: absolute;
+            top:64px;
+            left:85px;
+            font-size: medium;
+            color: rgb(89, 142, 189); 
+        }
+    </style>
 </head>
-<body>
+<body onload = "noBack();" onpageshow = "if(event.persisted) noBack();", onunload = "">
+    {% include 'main/mainBar.html' %}
+    <span class = "title">로그인</span>
+    <hr>    
     <form action="{% url 'signIn' %}" method="post">
         {% csrf_token %}
-        {% for field in form %}
-            {{field.label}}: {{field}}<br>
-            {% if field.errors %}
-            {{field.errors}}
-            {% endif %}
-        {% endfor %}
-        <button>로그인</button><br>    
-    </form>
-    <a href="{% url 'signUp' %}">회원가입 링크</a>    
+        <div class="container">
+            <div class = "col">
+                {% for field in form %}
+                {{field.label}}<br>
+                {% endfor %}
+            </div>
+            <div class = "row">
+                {% for field in form %}
+                {{field}}<br>
+                {% if field.errors %}
+                {{field.errors}}
+                {% endif %}
+                {% endfor %}
+            </div>
+            <span id = "signUpLink"><a href="{% url 'signUp' %}">회원가입</a></span><br>
+            <button>로그인</button><br>    
+        </div>   
+    </form>  
+    <script>
+        // function BtnClick(link){
+        //     location.replace(link);
+        // }
+        function noBack(){
+            window.history.forward();
+        }
+    </script>
 </body>
 </html>

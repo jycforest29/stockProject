@@ -5,11 +5,62 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        hr{
+            position: absolute;
+            top: 252px;
+            left: 576px;
+            width: 250px;
+            border: 0.5px solid black;
+        }
+        .title{
+            position: absolute;
+            top: 216px;
+            left: 650px;
+            font-size: x-large;
+        }
+        .container{
+            position: absolute;
+            top: 275px;
+            left: 637px;
+            width: 300px;
+            font-size: large;
+        }
+        .mdfBtn{
+            background-color:rgb(145, 191, 222);
+            width: 49px;
+            height: 35px;
+
+            border-radius:11px;
+            margin-left: 36px;
+            margin-top:11px; 
+        }
+        .col{
+            text-align: right;
+            float: left;
+        }
+        .row{
+            margin-left: 11px;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
-    아이디: {{request.user.username}}<br>
-    이메일: {{request.user.email}}<br>
-    타입: {{request.user.strategy}}<br>    
-    <a href="{% url 'editMyPage' %}">수정</a>
+    {% include 'main/mainBar.html' %}
+    <span class = "title">회원정보</span>
+    <hr>
+    <div class="container">
+        <div class = "col">
+            아이디<br>
+            이메일<br>
+            타입<br>
+        </div>
+        <div class = "row">
+            {{request.user.username}}<br>
+            {{request.user.email}}<br>
+            {{request.user.strategy}}<br>
+        </div><br>
+        <a href="{% url 'editMyPage' %}"><button class = "mdfBtn">수정</button></a>
+    </div>
 </body>
 </html>

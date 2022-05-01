@@ -9,66 +9,131 @@
       div{
          display: inline-block;
       }
+      a, a:visited, a:hover, a:active {
+         text-decoration: none;
+         color: inherit;
+        }
+      #searchBar{
+         margin-top: 36px;
+         margin-left: 550px;
+      }
+      #searchBarHr{
+         margin-left: 250px;
+         margin-top: 30px;
+         width: 1000px;
+         border: 1px solid rgb(25, 120, 184);
+      }  
+      #input{
+         width: 300px;
+         height: 29px;
+         border-radius: 5px;
+      }
+      #search{
+         background-color:rgb(103, 158, 195);
+         width: 55px;
+         height: 35px;
+         border: 1px solid rgb(103, 158, 195);
+         border-radius:11px;
+      }
+      #container{
+         margin-top: 30px;
+         margin-left: 300px;
+         display: flex;
+         padding: 11px; 
+         width: 900px;         
+      }
+      #likeRanking{
+         flex: 1;
+      }
+      #clickRanking{
+         flex: 1;
+      }
+      #userLike{
+         flex: 1;
+      }
+      #fontColor1{
+         font-size: large;
+         font-weight: 600;
+         color:rgb(28, 126, 139);
+      }
+      #fontColor2{
+         font-size: large;
+         font-weight: 600;
+         color:rgb(54, 180, 100);
+      }
+      #fontColor3{
+         font-size: large;
+         font-weight: 600;
+         color:rgb(164, 130, 180);
+      }
+      .fontStyle{
+         font-size: large;
+         font-weight: 600;
+      }
+      .ranking{
+         margin-top: 11px;
+      }
    </style>
-
-</head>
-<body>
    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-   <div>
-      순위
-      {% if stockRanking %}
-      {% for stock in stockRanking %}
-      {{stock.stockName}}<br>
-      {% endfor %}
-      {% endif %}
-   </div><br>
-   -
+</head>
+
+<body>   
+   {% include 'main/mainBar.html' %}
    <form action="{% url 'search' %}" method="get">
-      <div class="searchTitle">
-         주식 검색: 
-      </div> 
-      <div class = "input">
-         <input type="text" name = "keyword">
+      <div id="searchBar">
+         <input type="text" id = "input" name = "keyword"> 
+         <button id="search">검색</button>
       </div>
-      <div class="button">
-         <button>검색</button>
+   </form>   
+   <hr id = "searchBarHr">
+   <div id="container"> 
+      <div id = "likeRanking">
+         <span class = "fontStyle">좋아요 순위</span><br>  
+         <div class = "ranking">
+            {% if stockRanking %}
+            {% for stock in stockRanking %}
+            {{forloop.counter}} <a href="{% url 'stockInfo' stock.stockCode %}">{{stock.stockName}}</a><br>
+            {% endfor %}
+            {% endif %}
+         </div>
       </div>
-   </form>
-   -<br>
-   {% if user.is_authenticated %}
-   <a href="{% url 'signOut' %}">로그아웃</a><br>
-   <a href="{% url 'detailMyPage' %}">마이페이지</a><br>-<br>
-   /오늘 {{user.username}}님의 수익률: {{profit}}<br>-<br>
-
-   {{user.username}}님이 좋아요 한 주식들<br>
-   위험형<br>
-   {% if highStocks %}
-      {% for stock in highStocks %}
-      <a href="{% url 'stockInfo' stock.stockCode %}">{{stock.stockName}}({{stock.stockCode}})</a><br>
-      {% endfor %}
-   {% endif %}-<br>
-   중립형<br>
-   {% if midStocks %}
-      {% for stock in midStocks %}
-      <a href="{% url 'stockInfo' stock.stockCode %}">{{stock.stockName}}({{stock.stockCode}})</a><br>
-      {% endfor %}
-   {% endif %}-<br>
-   안정형<br>
-   {% if lowStocks %}
-      {% for stock in lowStocks %}
-      <a href="{% url 'stockInfo' stock.stockCode %}">{{stock.stockName}}({{stock.stockCode}})</a><br>
-      {% endfor %}
-   {% endif %}-<br>
-
-   /좋아요 한 주식들의 그래프
-   {% else %}
-   <a href="{% url 'signIn' %}">로그인</a><br> 
-   {% endif %}
-   <br>
-   인기 조회 주식: 
-   {% for stock in topStocks %}
-   <a href="{% url 'stockInfo' stock.stockCode %}">{{stock.stockName}}</a>
-   {% endfor %}
+      <div id = "clickRanking">
+         <span class = "fontStyle">조회한 순위 </span><br>
+         <div class = "ranking">
+            {% if topStocks %}
+            {% for stock in topStocks %}
+            {{forloop.counter}} <a href="{% url 'stockInfo' stock.stockCode %}">{{stock.stockName}}</a><br>
+            {% endfor %}
+            {% endif %}
+         </div>
+      </div>
+      <div id = "userLike">
+         {% if user.is_authenticated %}
+         <span class = "fontStyle">{{user.username}}님이 좋아요 한 주식들</span><br>
+         <div class = "ranking">
+            <span id = "fontColor1">위험형</span><br>
+            {% if highStocks %}
+               {% for stock in highStocks %}
+               &nbsp;<a href="{% url 'stockInfo' stock.stockCode %}">{{stock.stockName}}({{stock.stockCode}})</a><br>
+               {% endfor %}
+            {% endif %}
+            <span id = "fontColor2">중립형</span><br>
+            {% if midStocks %}
+               {% for stock in midStocks %}
+               &nbsp;<a href="{% url 'stockInfo' stock.stockCode %}">{{stock.stockName}}({{stock.stockCode}})</a><br>
+               {% endfor %}
+            {% endif %}
+            <span id = "fontColor3">안정형</span><br>
+            {% if lowStocks %}
+               {% for stock in lowStocks %}
+               &nbsp;<a href="{% url 'stockInfo' stock.stockCode %}">{{stock.stockName}}({{stock.stockCode}})</a><br>
+               {% endfor %}
+            {% endif %}         
+         {% endif %} 
+         </div>
+      </div>
+      <div id="likePlot"></div>
+   </div>
 </body>
 </html>
 

@@ -10,9 +10,9 @@ import mpld3
 import datetime as dt
 from sklearn import preprocessing
 from stock.views import searchTop5
-# 실검-하루지나면 초기화/이메일 인증/포트폴리오(미완)/애널리스트 분석도 같이 그래프에 넣기/글 댓글 수정
-# js - 대댓글/팝업/검색어 자동완성/뒤로가기 버튼/페이징
+
 searchTop5 = searchTop5
+keyword = ''
 # ipoDate를 date 형식으로 db에 저장하기 위해 형식 변환
 def setDateFormat(ipoDate):
     return ipoDate.replace('/', '-', 2)
@@ -32,6 +32,7 @@ def initSetting():
 
 # 주식 검색(종목명, 종목 코드로 검색 가능)
 def search(request):
+    global keyword
     if request.method == 'GET':
         keyword = request.GET.get('keyword')
         searchResults = Stock.objects.filter(Q(stockName__icontains=keyword)|Q(stockCode__icontains=keyword))
@@ -39,14 +40,28 @@ def search(request):
     else:
         raise Http404('검색 엔진 메서드 에러')
 
+def stockLikeSearch(request, stockCode):
+    global keyword
+    stock = Stock.objects.get(stockCode = stockCode)
+    if request.user in stock.likeUsers.all():
+        stock.likeUsers.remove(request.user)
+        stock.likeCount -= 1
+    else:
+        stock.likeUsers.add(request.user)
+        stock.likeCount += 1    
+    stock.save()    
+    kw = keyword
+    searchResults = Stock.objects.filter(Q(stockName__icontains=kw)|Q(stockCode__icontains=kw))
+    return render(request, 'main/search.html', {'keyword':kw, 'searchResults':searchResults})
+
+
 # 사용자가 좋아요한 주식별 타유저들의 타입을 분류해서 반환
 def findStockType(likes):
     high = []
     mid = []
     low = []
     typeList = [high, mid, low]
-    # 쿼리셋은 for문으로 접근 가능
-    
+
     for i in likes:
         highNum = 0
         midNum = 0
@@ -111,16 +126,12 @@ def likeStockAnalysis(likes):
     plt.ylabel('%')
     plt.legend()
     htmlTmp = mpld3.fig_to_html(fig)
-    htmlFile = open("main/templates/main/indexResult.html", "w")
+    htmlFile = open("main/templates/main/likeStockAnalysis.html", "w")
     htmlFile.write(htmlTmp)
     htmlFile.close() 
 
 def index(request):
     # initSetting()
-    # recommendations = yf.Ticker('JPM').recommendations
-    # recommendations = recommendations.iloc[:, 2]
-
-    # 5분 단위로 검색량이 가장 많은 주식 5개 찾음
     global searchTop5
     topStocks = []
     tmp = []
@@ -129,11 +140,10 @@ def index(request):
         stock = Stock.objects.get(stockName = i[0])
         topStocks.append(stock)
     
-    stockRanking = Stock.objects.filter(likeCount__gte = 1).order_by('likeCount')
+    stockRanking = Stock.objects.filter(likeCount__gte = 1).order_by('likeCount')[:5]
     likeStocks = None
     if request.user:
-        # 왜 pk로 바꾸니까 된거지?
         likeStocks = Stock.objects.filter(likeUsers__in = [request.user.pk]).order_by('likeCount')
         highStocks, midStocks, lowStocks = findStockType(likeStocks)
-        # compareToKospiFunc(likeStocks)
+        likeStockAnalysis(likeStocks)
     return render(request, 'main/index.html', {'stockRanking':stockRanking, 'highStocks':highStocks,'midStocks':midStocks,'lowStocks':lowStocks, 'topStocks':topStocks}) 

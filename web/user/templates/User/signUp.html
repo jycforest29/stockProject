@@ -5,18 +5,69 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        hr{
+            position: absolute;
+            top: 252px;
+            left: 576px;
+            width: 300px;
+            border: 0.5px solid black;
+        }
+        .title{
+            position: absolute;
+            top: 216px;
+            left: 650px;
+            font-size: x-large;
+        }
+        .container{
+            position: absolute;
+            top: 275px;
+            left: 575px;
+            width: 300px;
+            /* border: 1px solid rgb(103, 158, 195); */
+            font-size: large;
+        }
+        button{
+            background-color:rgb(145, 191, 222);
+            width: 56px;
+            height: 35px;
+            border-radius:11px;
+            margin-left: 100px;
+            margin-top:11px; 
+        }
+        .col{
+            margin-top: 5px;
+            text-align: right;
+            float: left;
+        }
+        .row{
+            margin-left: 8px;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
+    {% include 'main/mainBar.html' %}
+    <span class = "title">회원가입</span>
+    <hr> 
     <form action="{% url 'signUp' %}" method = "POST">
         {% csrf_token %}
-
-        {% for field in form %}
-            {{field.label}}: {{field}}<br>
-            {% if field.errors %}
-            {{field.errors}}
-            {% endif %}
-        {% endfor %}
-        <button>회원가입</button>
+        <div class="container">
+            <div class = "col">
+                {% for field in form %}
+                {{field.label}}<br>
+                {% endfor %}
+            </div>
+            <div class = "row">
+                {% for field in form %}
+                {{field}}<br>
+                {% if field.errors %}
+                {{field.errors}}
+                {% endif %}
+                {% endfor %}
+            </div><br>       
+            <button>가입</button>
+        </div>
     </form>
 </body>
 </html>

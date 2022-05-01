@@ -12,7 +12,7 @@ strategyType = [
 class Post(models.Model):
     # non-nullable field인데 일단
     title = models.CharField(max_length=30, null = True, blank = True)
-    content = models.TextField()
+    content = models.TextField(max_length=330)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="postAuthor")
     # non-nullable field인데 일단 null = True로 선언
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE, related_name="postStock")    

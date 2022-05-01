@@ -70,6 +70,8 @@ def preprocessData(df):
 # 그래프에서 선택한 날짜별 당시 애널리스트 의견 데이터 제공
 def returnRecommendation(stockCode):
     recommendations = yf.Ticker(stockCode).recommendations
+    # recommendations = yf.Ticker('JPM').recommendations
+    # recommendations = recommendations.iloc[:, 2]
     return recommendations
 
 # 유저가 체크한 값들(checkbox), 주식(stockCode), 분석 시작 날짜(start)에 따른 주가 데이터 분석
@@ -115,7 +117,7 @@ def indexAnalysis(checkbox, stockCode, start):
     plt.ylabel('index')
     plt.legend()
     htmlTmp = mpld3.fig_to_html(fig)
-    htmlFile = open("main/templates/main/indexResult.html", "w")
+    htmlFile = open("stock/templates/stock/indexResult.html", "w")
     htmlFile.write(htmlTmp)
     htmlFile.close()
     
@@ -130,7 +132,7 @@ def stockAnalysis(request, stockCode):
         checkbox2 = request.POST.get('checkbox2')
         checkbox3 = request.POST.get('checkbox3')
         indexAnalysis([checkbox1, checkbox2, checkbox3], stockCode, start)
-        return render(request, 'main/indexResult.html')
+        return render(request, 'stock/indexResult.html')
     else:
         raise Http404('가격 조회 메서드 에러')
 
@@ -161,7 +163,7 @@ def stockInfo(request, stockCode):
     strategyText = '매수: '+ str(0 if postsBuy ==0 else int(postsBuy / postsStrategySum)*100) + ' 중립: '+ str(0 if postsHold ==0 else int(postsHold / postsStrategySum)*100) + ' 매도: '+ str(0 if postsSell ==0 else int(postsSell / postsStrategySum)*100)
     
     topPosts = posts.order_by('-likeCount')[:5]
-    return render(request, 'main/stockInfo.html', {'stockData':stockData, 'startDate':startDate, 'endDate':endDate, 'userInStock':userInStock, 'posts':posts, 'strategyText':strategyText, 'topPosts':topPosts})
+    return render(request, 'stock/stockInfo.html', {'stockData':stockData, 'startDate':startDate, 'endDate':endDate, 'userInStock':userInStock, 'posts':posts, 'strategyText':strategyText, 'topPosts':topPosts})
 
 # 주식 좋아요
 def stockLike(request, stockCode):
@@ -174,3 +176,4 @@ def stockLike(request, stockCode):
         stock.likeCount += 1      
     stock.save()    
     return redirect('stockInfo', stockCode)
+

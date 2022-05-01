@@ -5,10 +5,27 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <style>
+    .postBtn{ 
+      background-color:#ffffff;
+      width: 49px;
+      height: 35px;
+      border: 1px solid rgb(103, 158, 195);
+      border-radius:11px;
+      /* margin-left: 50px; */
+      margin-top:5px;            
+    }
+    .postBtn:hover{
+    background-color:rgb(103, 158, 195);
+    }
+    .cmtBtn{
+      
+    }
+  </style>
 </head>
 <body>
-  <!-- 글 -->
-  <!-- 글 내용 -->
+  {% include 'main/mainBar.html' %}
+  
   주식: {{post.stock.stockName}}<br>
   제목: {{post.title}}<br>
   작성자: {{post.author}}<br>
@@ -23,8 +40,8 @@
 
   <!-- 글쓴이와 로그인한 유저가 같을 때 -->
   {% if post.author == request.user %}    
-    <a href="{% url 'editPost' post.pk %}">수정</a>
-    <a href="{% url 'deletePost' post.pk post.stock.stockCode %}">삭제</a><br>  
+    <a href="{% url 'editPost' post.pk %}"><button class = "postBtn">수정</button></a>
+    <a href="{% url 'deletePost' post.pk post.stock.stockCode %}"><button class = "postBtn">삭제</button></a><br>  
   <!-- 글쓴이와 로그인한 유저가 다를 때 -->
   {% else %}
     <form action="{% url 'likePost' post.pk %}" method="post">
@@ -80,8 +97,8 @@
         <button>수정</button>
       </form>
       {% else %}
-      <a href="{% url 'editComment' comment.pk post.pk %}">수정</a>
-      <a href="{% url 'deleteComment' comment.pk post.pk %}">삭제</a>      
+      <a href="{% url 'editComment' comment.pk post.pk %}" ><button class = "postBtn">수정</button> </a>
+      <a href="{% url 'deleteComment' comment.pk post.pk %}"><button class = "postBtn">삭제</button></a>      
       {% endif %}
     {% else %}
     <form action="{% url 'likeComment' comment.pk %}" method="post">
@@ -92,4 +109,4 @@
     <a href="{% url 'reComment' comment.pk post.pk %}">대댓글</a><br>
   {% endfor %}
 </body>
-</html>
+</html> 

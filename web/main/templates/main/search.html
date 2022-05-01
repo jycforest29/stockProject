@@ -5,23 +5,126 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <style>
-        a{
+    <style>        
+        a, a:visited, a:hover, a:active {
             text-decoration: none;
+            color: inherit;
+        }
+        #searchBar{
+         margin-top: 36px;
+         margin-left: 550px;
+        }
+        #searchHr{
+            margin-left: 0px;
+            width: 500px;
+            border: 0.5px solid black;
+        }
+        #searchBarHr{
+         margin-left: 250px;
+         margin-top: 30px;
+         width: 1000px;
+         border: 1px solid rgb(25, 120, 184);
+        }  
+        #input{
+            width: 300px;
+            height: 29px;
+            border-radius: 5px;
+        }
+        #search{
+            background-color:rgb(103, 158, 195);
+            width: 55px;
+            height: 35px;
+            border: 1px solid rgb(103, 158, 195);
+            border-radius:11px;
+        }
+        .resultCss{
+            /* background-color: rgb(183, 205, 220); */
+            margin-left:480px;
+            width: 600px;
+        }
+        .result{
+            text-align: left;
+        }
+        .add{ 
+            background-color:#ffffff;
+            width: 49px;
+            height: 35px;
+            border: 1px solid rgb(103, 158, 195);
+            border-radius:11px;
+            /* margin-left: 50px; */
+            margin-top:5px;            
+        }
+        .add:hover{
+            background-color:rgb(103, 158, 195);
+        }
+        .remove{ 
+            background-color:#ffffff;
+            width: 49px;
+            height: 35px;
+            border: 1px solid rgb(213, 166, 207);
+            border-radius:11px;
+            /* margin-left: 50px; */
+            margin-top:5px;            
+        }
+        .remove:hover{
+            background-color:rgb(213, 166, 207);
+        }
+        .kospiCss{
+            font-weight: 600;
+        }
+        .noResult{
+            position: absolute;
+            top: 240px;
+            left: 606px;
+            font-size: large;
         }
     </style>
 </head>
-<body>
-    {% if keyword %}
-        {% if searchResults %}
-            {% for result in searchResults %}
-            <a href="{% url 'stockInfo' result.stockCode %}">{{result.stockName}}</a>({{result.stockCode}}) {{result.kospi}}<br>
-            {% endfor %}
-        {% else %}
-            검색 결과가 없습니다
+<body>    
+    {% include 'main/mainBar.html' %}
+    <form action="{% url 'search' %}" method="get">
+        <div id="searchBar">
+           <input type="text" id = "input" name = "keyword" value = "{{keyword|default_if_none:''}}"> 
+           <button id="search">검색</button>
+        </div>
+     </form>   
+    <hr id = "searchBarHr">
+    <div class="resultCss">
+        {% if keyword %}
+            {% if searchResults %}
+                {% for result in searchResults %}
+                <div class="result">
+                    {% if user.is_authenticated %}
+                        {% if request.user in result.likeUsers.all %}       
+                        <a href="{% url 'stockLikeSearch' result.stockCode %}"><button class = "remove" onclick="removeAlert()">삭제</button></a>
+                        {% else %}
+                        <a href="{% url 'stockLikeSearch' result.stockCode %}"><button class = "add" onclick="addAlert()">추가</button></a>
+                        {% endif %}
+                    {% else %}
+                    <a href="{% url 'signIn' %}"><button class = "add" onclick="signInAlert()">추가</button></a>
+                    {% endif %}                    
+                    <span class="kospiCss">{{result.kospi}} </span>
+                    <a href="{% url 'stockInfo' result.stockCode %}">{{result.stockName}}</a>({{result.stockCode}})
+                    <hr id = "searchHr"> 
+                </div>
+                {% endfor %}
+            {% else %}
+               <span class = "noResult">검색 결과가 없습니다</span> 
+            {% endif %}
+        {% else %} 
+        <span class = "noResult">검색어를 다시 입력해주세요</span> 
         {% endif %}
-    {% else %}
-        검색어를 다시 입력해주세요
-    {% endif %}
+    </div>
+    <script>
+        function addAlert(){
+            alert('추가되었습니다');
+        }
+        function removeAlert(){
+            alert('삭제되었습니다');
+        }
+        function signInAlert(){
+            alert('로그인이 필요합니다');
+        }
+    </script>
 </body>
 </html> 
