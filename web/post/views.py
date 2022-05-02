@@ -22,22 +22,23 @@ def detailPost(request, postPk):
     return render(request, 'post/detailPost.html', {'post':post, 'userInPostLikes':userInPostLikes, 'commentForm':commentForm, 'comments':comments})
 
 def newPost(request, stockCode):
-    postform = PostForm()
+    postForm = PostForm()
+    stock = Stock.objects.get(stockCode = stockCode)
     if request.method == 'POST':
-        postform = PostForm(request.POST)
-        if postform.is_valid():
-            title = postform.cleaned_data['title']
-            content = postform.cleaned_data['content']
-            strategy = postform.cleaned_data['strategy']
+        postForm = PostForm(request.POST)
+        if postForm.is_valid():
+            title = postForm.cleaned_data['title']
+            content = postForm.cleaned_data['content']
+            strategy = postForm.cleaned_data['strategy']
             author = request.user
-            stock = Stock.objects.get(stockCode = stockCode)
+            stock = stock
             #  Field 'id' expected a number but got <SimpleLazyObject: 
             post = Post(title = title, content = content, author = author, stock = stock, strategy = strategy)
             post.save()
             # post.save()는 필수? 
             return redirect('stockInfo', stockCode)
     # 하나는 html에 필요한 변수, 하나는 매개변수 - 매개변수여서라기 보다는 newPost.html에서 필요해서
-    return render(request, 'post/newPost.html', {'postform':postform, 'stockCode':stockCode})        
+    return render(request, 'post/newPost.html', {'postForm':postForm, 'stock':stock})        
 
 def editPost(request, postPk):
     editForm = PostForm() 

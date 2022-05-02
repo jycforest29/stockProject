@@ -1,0 +1,68 @@
+
+      div{
+    display: inline-block;
+}
+a, a:visited, a:hover, a:active {
+   text-decoration: none;
+   color: inherit;
+}
+#searchBar{
+   margin-top: 36px;
+   margin-left: 550px;
+}
+#searchBarHr{
+   margin-left: 250px;
+   margin-top: 30px;
+   width: 1000px;
+   border: 1px solid rgb(25, 120, 184);
+}  
+#input{
+   width: 300px;
+   height: 29px;
+   border-radius: 5px;
+}
+#search{
+   background-color:rgb(103, 158, 195);
+   width: 55px;
+   height: 35px;
+   border: 1px solid rgb(103, 158, 195);
+   border-radius:11px;
+}
+#container{
+   margin-top: 30px;
+   margin-left: 300px;
+   display: flex;
+   padding: 11px; 
+   width: 900px;         
+}
+#likeRanking{
+   flex: 1;
+}
+#clickRanking{
+   flex: 1;
+}
+#userLike{
+   flex: 1;
+}
+#fontColor1{
+   font-size: large;
+   font-weight: 600;
+   color:rgb(28, 126, 139);
+}
+#fontColor2{
+   font-size: large;
+   font-weight: 600;
+   color:rgb(54, 180, 100);
+}
+#fontColor3{
+   font-size: large;
+   font-weight: 600;
+   color:rgb(164, 130, 180);
+}
+.fontStyle{
+   font-size: large;
+   font-weight: 600;
+}
+.ranking{
+   margin-top: 11px;
+}

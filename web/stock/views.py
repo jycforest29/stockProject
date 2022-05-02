@@ -9,6 +9,7 @@ import numpy as np
 import mpld3
 import datetime as dt
 from sklearn import preprocessing
+
 # Create your views here.
 
 # 애널리스트 의견별 분류
@@ -156,9 +157,9 @@ def stockInfo(request, stockCode):
         
     # 해당 주식의 게시글에는 매수/중립/매도의견이 각각 몇 %였는지    
     posts = Post.objects.filter(stock = stockData)    
-    postsBuy = Post.objects.filter(strategy = '매수').count()    
-    postsHold = Post.objects.filter(strategy = '중립').count()       
-    postsSell = Post.objects.filter(strategy = '매도').count()
+    postsBuy = posts.filter(strategy = '매수').count()    
+    postsHold = posts.filter(strategy = '중립').count()       
+    postsSell = posts.filter(strategy = '매도').count()
     postsStrategySum = sum([postsBuy,postsHold,postsSell] )       
     strategyText = '매수: '+ str(0 if postsBuy ==0 else int(postsBuy / postsStrategySum)*100) + ' 중립: '+ str(0 if postsHold ==0 else int(postsHold / postsStrategySum)*100) + ' 매도: '+ str(0 if postsSell ==0 else int(postsSell / postsStrategySum)*100)
     
@@ -173,7 +174,8 @@ def stockLike(request, stockCode):
         stock.likeCount -= 1
     else:
         stock.likeUsers.add(request.user)
-        stock.likeCount += 1      
-    stock.save()    
+        stock.likeCount += 1    
+    stock.save()  
     return redirect('stockInfo', stockCode)
 
+ 

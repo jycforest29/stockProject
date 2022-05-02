@@ -1,5 +1,5 @@
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import pandas as pd
 import yfinance as yf
 import matplotlib.pyplot as plt
@@ -13,6 +13,7 @@ from stock.views import searchTop5
 
 searchTop5 = searchTop5
 keyword = ''
+
 # ipoDate를 date 형식으로 db에 저장하기 위해 형식 변환
 def setDateFormat(ipoDate):
     return ipoDate.replace('/', '-', 2)
@@ -30,6 +31,9 @@ def initSetting():
             stockNum = df.loc[i][11]
         )
 
+def perDay():
+    stockRanking = Stock.objects.filter(likeCount__gte = 1).order_by('likeCount')[:5]
+
 # 주식 검색(종목명, 종목 코드로 검색 가능)
 def search(request):
     global keyword
@@ -40,8 +44,19 @@ def search(request):
     else:
         raise Http404('검색 엔진 메서드 에러')
 
-def stockLikeSearch(request, stockCode):
-    global keyword
+def like(user, stockCode):
+    stock = Stock.objects.get(stockCode = stockCode)
+    if user in stock.likeUsers.all():
+        stock.likeUsers.remove(user)
+        stock.likeCount -= 1
+    else:
+        stock.likeUsers.add(user)
+        stock.likeCount += 1    
+    stock.save()    
+
+def addOrRemove(request, stockCode):
+    
+    # global keyword
     stock = Stock.objects.get(stockCode = stockCode)
     if request.user in stock.likeUsers.all():
         stock.likeUsers.remove(request.user)
@@ -50,10 +65,11 @@ def stockLikeSearch(request, stockCode):
         stock.likeUsers.add(request.user)
         stock.likeCount += 1    
     stock.save()    
-    kw = keyword
-    searchResults = Stock.objects.filter(Q(stockName__icontains=kw)|Q(stockCode__icontains=kw))
-    return render(request, 'main/search.html', {'keyword':kw, 'searchResults':searchResults})
-
+    
+    return redirect('search')
+    # kw = keyword
+    # searchResults = Stock.objects.filter(Q(stockName__icontains=kw)|Q(stockCode__icontains=kw))
+    # return render(request, 'main/search.html', {'keyword':kw, 'searchResults':searchResults})
 
 # 사용자가 좋아요한 주식별 타유저들의 타입을 분류해서 반환
 def findStockType(likes):
@@ -145,5 +161,5 @@ def index(request):
     if request.user:
         likeStocks = Stock.objects.filter(likeUsers__in = [request.user.pk]).order_by('likeCount')
         highStocks, midStocks, lowStocks = findStockType(likeStocks)
-        likeStockAnalysis(likeStocks)
+        # likeStockAnalysis(likeStocks)
     return render(request, 'main/index.html', {'stockRanking':stockRanking, 'highStocks':highStocks,'midStocks':midStocks,'lowStocks':lowStocks, 'topStocks':topStocks}) 

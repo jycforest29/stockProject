@@ -5,25 +5,91 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        .container{
+            position: absolute;
+            top: 161px;
+            left: 450px;
+            width: 650px;
+            font-size: large;
+        } 
+        .titleCss{
+            width: 450px;
+            height: 25px;
+        }
+        .contentCss{
+            width: 500px;
+            height: 250px;
+        }
+        #label{
+            margin-top: 11px;
+        }
+        #otherField{
+            margin-top: 11px;
+            margin-left: 11px;
+        } 
+        #otherFieldTmp{
+            margin-top: 11px;
+            margin-left: 66px;
+        }               
+        #contentField{
+            margin-left: 111px;
+        }
+        #mdfBtn{
+            /* position: absolute;
+            top: 195px;
+            left: 234px; */
+            background-color:rgb(103, 158, 195);
+            width: 65px;
+            height: 40px;
+            border: 1px solid rgb(103, 158, 195);
+            border-radius:11px;
+            margin-top: 11px;
+            margin-left: 250px;
+        }
+    </style>
 </head>
-<body>
+<body>    
+    {% include 'main/mainBar.html' %}
     <form action="{% url 'editPost' post.pk %}" method="post">
         {% csrf_token %}
-        주식: {{post.stock.stockName}}<br> 
-        {% for field in editForm %}
-            {{field.label}}: {{field}} <br>
-            {% if field.errors %}
-            {{field.errors}}
-            {% endif %}
-        {% endfor %}
-        작성자: {{post.author}}<br> 
-        작성자 타입: {{post.author.strategy}}<br>
-        {% if post.createdAt == post.updatedAt %}
-        작성일자: {{post.createdAt}}
-        {% else %}
-        수정일자: {{post.updatedAt}}({{post.createdAt}})
-        {% endif %}<br>
-        <button>수정</button>
+        <div class="container">
+            <div id="label">
+                종목명<br>
+                작성자<br>
+                작성자 타입<br>
+                {% if post.createdAt == post.updatedAt %}
+                작성일자<br> 
+                {% else %}
+                수정일자<br>
+                {% endif %}
+            </div>
+            <div id="otherField">
+                {{post.stock.stockName}}<br>
+                {{post.author}}<br>
+                {{post.author.strategy}}<br>
+                {% if post.createdAt == post.updatedAt %}
+                {{post.createdAt}}<br>
+                {% else %}
+                {{post.updatedAt}}({{post.createdAt}})<br>
+                {% endif %}
+            </div><br>            
+            {% for field in editForm %}
+                <div id = "labelTmp">{{field.label}}</div>
+                {% if field.label == '내용' %}
+                <br>
+                <div id="contentField">
+                    {{field}}
+                </div><br>
+                {% else %}
+                <div id = "otherFieldTmp">{{field}}</div><br>
+                {% endif %}
+                {% if field.errors %}
+                {{field.errors}}
+                {% endif %} 
+            {% endfor %}                   
+            <button id = "mdfBtn">수정</button>
+        </div>        
     </form>
 </body>
 </html>

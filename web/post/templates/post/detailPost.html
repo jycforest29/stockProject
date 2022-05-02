@@ -6,42 +6,106 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <style>
-    .postBtn{ 
-      background-color:#ffffff;
+    .mdfBtn{ 
+      background-color:rgb(103, 158, 195);
       width: 49px;
       height: 35px;
       border: 1px solid rgb(103, 158, 195);
       border-radius:11px;
-      /* margin-left: 50px; */
-      margin-top:5px;            
+      position: absolute;
+      top: 325px;
+      left: 900px;       
     }
-    .postBtn:hover{
-    background-color:rgb(103, 158, 195);
+    .delBtn{ 
+      background-color:rgb(161, 195, 103);
+      width: 49px;
+      height: 35px;
+      border: 1px solid rgb(161, 195, 103);
+      border-radius:11px;
+      position: absolute;
+      top: 325px;
+      left: 960px;              
+    }
+    #cmtWriteBtn{
+      background-color:rgb(228, 239, 166);
+      width: 50px;
+      height: 39px;
+      border-radius:16px;
+      border: 1.6px solid rgb(128, 144, 36);
+    }
+    .cmtCss{
+      width: 475px;
+      height: 25px;
     }
     .cmtBtn{
-      
+      border: none;
+    }
+    .container{
+      position: absolute;
+      top: 161px;
+      left: 450px;
+      width: 600px;
+      font-size: large;
+    } 
+    .commenter{
+      font-weight: 600;
+    }
+    #cmt{
+      font-size: large;
+    }
+    #cmtContainer{
+      margin-top: 245px;
+      margin-left: 450px;
+    }
+    #label{
+      margin-top: 11px; 
+    }
+    #otherField{
+      margin-top: 11px;
+      margin-left: 11px;
+    }
+    #cmtLine{
+      border:1.6px solid rgb(128, 144, 36);
+    }
+    #cmtPerLine{
+      border:1px solid rgb(128, 144, 36);
     }
   </style>
 </head>
 <body>
   {% include 'main/mainBar.html' %}
-  
-  주식: {{post.stock.stockName}}<br>
-  제목: {{post.title}}<br>
-  작성자: {{post.author}}<br>
-  작성자 타입: {{post.author.strategy}}<br>
-  {% if post.createdAt == post.updatedAt %}
-  작성일자: {{post.createdAt}}
-  {% else %}
-  수정일자: {{post.updatedAt}}({{post.createdAt}})
-  {% endif %}<br>
-  내용: {{post.content}}<br>
-  매수/중립/매도: {{post.strategy}}<br>
-
+  <div class="container">
+    <div id="label">
+      종목명<br>
+      작성자<br>
+      작성자 타입<br>
+      {% if post.createdAt == post.updatedAt %}
+      작성일자<br>
+      {% else %}
+      수정일자<br>
+      {% endif %}
+      제목<br>
+      매수/중립/매도<br>
+      내용<br>
+    </div>
+    <div id="otherField">
+      {{post.stock.stockName}}<br>
+      {{post.author}}<br>
+      {{post.author.strategy}}<br>
+      {% if post.createdAt == post.updatedAt %}
+      {{post.createdAt}}<br>
+      {% else %}
+      {{post.updatedAt}}({{post.createdAt}})<br>
+      {% endif %}
+      {{post.title}}<br>
+      {{post.strategy}}<br>
+      {{post.content}}<br>      
+    </div>
+</div>
   <!-- 글쓴이와 로그인한 유저가 같을 때 -->
   {% if post.author == request.user %}    
-    <a href="{% url 'editPost' post.pk %}"><button class = "postBtn">수정</button></a>
-    <a href="{% url 'deletePost' post.pk post.stock.stockCode %}"><button class = "postBtn">삭제</button></a><br>  
+    <a href="{% url 'editPost' post.pk %}"><button class = "mdfBtn">수정</button></a>
+    <a href="{% url 'deletePost' post.pk post.stock.stockCode %}"><button class = "delBtn">삭제</button></a><br>  
   <!-- 글쓴이와 로그인한 유저가 다를 때 -->
   {% else %}
     <form action="{% url 'likePost' post.pk %}" method="post">
@@ -56,57 +120,61 @@
   
   <!-- 댓글 -->
   <!-- 댓글 작성 폼 -->
-  {% if commentForm %}
-  <form action="{% url 'newComment' post.pk %}" method="post">
-    {% csrf_token %}
-    {% for field in commentForm %}
-        {{field.label}}: {{field}}<br>
+  <div id="cmtContainer">
+    {% if commentForm %}
+    <form action="{% url 'newComment' post.pk %}" method="post">
+      {% csrf_token %}
+      {% for field in commentForm %}
+        <span id = "cmt">{{field.label}}</span> {{field}}
         {% if field.errors %}
         {{field.errors}}
         {% endif %} 
-    {% endfor %}
-    <button>작성</button>
-  </form>
-  {% endif %}
-  
-  <!-- 댓글들 -->
-  {% for comment in comments %}
-    {% if comment.author == request.user %}
-    글 작성자
-    {% else %}
-    {{comment.author}}
-    {% endif %}
-    ({{comment.author.strategy}})
-    {% if comment.createdAt == comment.updatedAt %}
-    {{comment.createdAt}}
-    {% else %}
-    {{comment.updatedAt}}({{comment.createdAt}})
-    {% endif %}<br>
-    내용: {{comment.content}}<br>
-
-    {% if comment.author == request.user %}
-      {% if editForm %}
-      <form action="{% url 'editComment' comment.pk post.pk %}" method="post">
-        {% csrf_token %}
-        {% for field in editForm %}
-            {{field.label}}: {{field}}<br>
-            {% if field.errors %}
-            {{field.errors}}
-            {% endif %}
-        {% endfor %}
-        <button>수정</button>
-      </form>
-      {% else %}
-      <a href="{% url 'editComment' comment.pk post.pk %}" ><button class = "postBtn">수정</button> </a>
-      <a href="{% url 'deleteComment' comment.pk post.pk %}"><button class = "postBtn">삭제</button></a>      
-      {% endif %}
-    {% else %}
-    <form action="{% url 'likeComment' comment.pk %}" method="post">
-      {% csrf_token %}
-      <button>좋아요</button> {{comment.likeCount}}
+      {% endfor %}
+      <button id = "cmtWriteBtn">작성</button>
     </form>
     {% endif %}
-    <a href="{% url 'reComment' comment.pk post.pk %}">대댓글</a><br>
-  {% endfor %}
+    <hr id = "cmtLine">
+    <!-- 댓글들 -->
+    {% for comment in comments %}
+      {% if comment.author == request.user %}
+      <span class="commenter">작성자</span>      
+      {% else %}
+      <span class="commenter">{{comment.author}}</span>
+      {% endif %}
+      <span class="commenter">({{comment.author.strategy}})</span>
+      {{comment.content}}
+
+      {% if comment.author == request.user %}
+        {% if editForm %}
+        <form action="{% url 'editComment' comment.pk post.pk %}" method="post">
+          {% csrf_token %}
+          {{editForm}}<br>
+          {% for field in editForm %}
+              {% if field.errors %}
+              {{field.errors}}
+              {% endif %}
+          {% endfor %}
+          <button>수정</button>
+        </form>
+        {% else %}
+        <a href="{% url 'editComment' comment.pk post.pk %}" ><button class = "cmtBtn">수정</button> </a>
+        <a href="{% url 'deleteComment' comment.pk post.pk %}"><button class = "cmtBtn">삭제</button></a>      
+        {% endif %}
+      {% else %}
+      <form action="{% url 'likeComment' comment.pk %}" method="post">
+        {% csrf_token %}
+        <button>좋아요</button> {{comment.likeCount}}
+      </form>
+      {% endif %}
+      <a href="{% url 'reComment' comment.pk post.pk %}"><button class = "cmtBtn">대댓글</button></a>
+      {% if comment.createdAt == comment.updatedAt %}
+      ({{comment.createdAt}})
+      {% else %}
+      ({{comment.updatedAt}}({{comment.createdAt}}))
+      {% endif %}
+      <br>
+      <hr id = "cmtPerLine">
+    {% endfor %}
+  </div>
 </body>
 </html> 

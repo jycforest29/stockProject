@@ -13,15 +13,62 @@
             text-decoration: none;
             color: inherit;
         }
-        .other{
+        table{
+            margin-top: -11px;
+        }
+        th{
+            text-align: right;
+        }
+        .col{
+            margin-top: 11px;
+            text-align: left;
+            float: left;
+        }
+        .row{
+            margin-top: 11px;
+            margin-left: 8px;
+            text-align: left;
+        }
+        .add{ 
+            background-color:#ffffff;
+            width: 49px;
+            height: 35px;
+            border: 1px solid rgb(103, 158, 195);
+            border-radius:11px;
+            margin-top: 25px;
+            margin-left: 50px;            
+        }
+        .add:hover{
+            background-color:rgb(103, 158, 195);
+        }
+        .remove{ 
+            background-color:#ffffff;
+            width: 49px;
+            height: 35px;
+            border: 1px solid rgb(213, 166, 207);
+            border-radius:11px;
+            margin-top: 25px;
+            margin-left: 50px;          
+        }
+        .remove:hover{
+            background-color:rgb(213, 166, 207);
+        }
+        #analysis{
             background-color:ffffff;
             width: 55px;
             height: 35px;
             border: 1px solid rgb(103, 158, 195);
             border-radius:11px;
         }
-        .other:hover{
+        #analysis:hover{
             background-color:rgb(103, 158, 195);
+        }
+        #write{
+            background-color:rgb(232, 225, 192);
+            width: 55px;
+            height: 25px;
+            border: 1px solid rgb(232, 225, 192);
+            border-radius:5px;
         }
         #searchBar{
          margin-top: 36px;
@@ -47,6 +94,7 @@
         }
         #title{
             font-size: x-large;
+            font-weight: 600;
         }
         #container{
             margin-top: 30px;
@@ -64,6 +112,14 @@
         #spostsAll{         
             flex: 0.3;  
         }
+        #strategyText{
+            width: 200px;
+            height: 25px;
+            border: 3px solid rgb(57, 74, 80);
+            border-radius: 5px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
         #sanalysis{            
             margin-top: 50px;
             margin-left: 400px;
@@ -72,6 +128,7 @@
             width: 700px;
             height: 50px;
             text-align: center;
+            padding-top: 11px;
         }
      </style>
 </head>
@@ -79,7 +136,7 @@
     {% include 'main/mainBar.html' %}
     <form action="{% url 'search' %}" method="get">
         <div id="searchBar">
-           <input type="text" id = "input" name = "keyword" value = "{{keyword|default_if_none:''}}"> 
+           <input type="text" id = "input" name = "keyword" value = "{{stockData.stockName|default_if_none:''}}"> 
            <button id="search">검색</button>
         </div>
      </form>   
@@ -87,46 +144,85 @@
     <div id="container"> 
         <div id = "sinfo">
             <span id = "title">기업정보</span><br>
-            종목명: {{stockData.stockName}}<br>
-            종목코드: {{stockData.stockCode}}<br>
-            상장일: {{stockData.ipoDate}}<br>
-            액면가: {{stockData.perValue}}원<br>
-            상장주식수: {{stockData.stockNum}}주
+            <div class = "col">
+                종목명<br>
+                종목코드<br>
+                상장일<br>
+                액면가<br>
+                상장주식수<br>
+            </div>
+            <div class = "row">
+                {{stockData.stockName}}<br>
+                {{stockData.stockCode}}<br>
+                {{stockData.ipoDate}}<br>
+                {{stockData.perValue}}원<br>
+                {{stockData.stockNum}}주
+            </div>
             {% if user.is_authenticated %}
             <form action="{% url 'stockLike' stockData.stockCode %}" method="POST">
                 {% csrf_token %}
                 {% if userInStock %}
-                <button>삭제</button>  
+                <button class = "remove">삭제</button>  
                 {% else %}  
-                <button>추가</button>
+                <button class = "add">추가</button>
                 {% endif %}
             </form>
             {% else %}
             <form>
-                <button onclick="addAlert()" class = "other">추가</button>
+                <button onclick="addAlert()" class = "select">추가</button>
             </form>
             <script>
                 addAlert = () => {
                     alert('로그인 후 이용가능');
                 }
             </script>
-            {% endif %}  
-            {{strategyText}}<br>      
+            {% endif %}      
         </div><br>    
         <div id = "spostsTop">
             <span id="title">인기글</span><br>
-            {% for post in topPosts %}
-            <a href="{% url 'detailPost' post.pk %}">{{post.title}}[{{post.commentCount}}] {{post.likeCount}}</a><br>
-            {% endfor %}
+            <div id="strategyText">
+                {{strategyText}} 
+            </div><br> 
+            {% if topPosts %}
+                {% for post in topPosts %}
+                <a href="{% url 'detailPost' post.pk %}">{{post.likeCount}} {{post.title}}[{{post.commentCount}}] {{post.author.username}} {{post.strategy}}</a><br>
+                {% endfor %}
+            {% else %}
+                인기글 없음
+            {% endif %}
         </div>
         <div id = "spostsAll">
             <span id="title">전체글</span>
-            <a href="{% url 'newPost' stockData.stockCode %}"><button class = "other">글쓰기</button></a><br>            
+            <a href="{% url 'newPost' stockData.stockCode %}"><button id = "write">글쓰기</button></a><br>           
+            <!-- <table>
+                <tr>
+                    <th>제목</th>
+                    <th>작성자</th>
+                </tr>
+                {% if posts %} 
+                {% for post in posts %}
+                    <tr>
+                        <td><a href="{% url 'detailPost' post.pk %}">{{post.title}}</a>[{{post.commentCount}}]</td>
+                        <td>{{post.author.username}}</td>
+                    </tr>
+                <br>            
+                {% endfor %}
+                {% else %}
+                    글 없음
+                {% endif %}
+            </table>  -->
             {% if posts %} 
             {% for post in posts %}
-            <a href="{% url 'detailPost' post.pk %}">{{post.title}}</a>[{{post.commentCount}}]<br>            
+                <tr>
+                    <td><a href="{% url 'detailPost' post.pk %}">{{post.title}}</a>[{{post.commentCount}}]</td>
+                    <td>{{post.author.username}}</td>
+                </tr>
+            <br>            
             {% endfor %}
+            {% else %}
+                글 없음
             {% endif %}
+            
         </div><br>
     </div>
     
@@ -139,10 +235,12 @@
                     <label>거래량 <input type="checkbox" name="checkbox1" id="checkbox1"></label>
                     <label>종가<input type="checkbox" name="checkbox2" id="checkbox2"></label>
                     <label>코스피<input type="checkbox" name="checkbox3" id="checkbox3"></label>
-                    <!-- 영업이익 매출액 개인/기관/외국인 -->
+                    <label>영업이익<input type="checkbox" name="checkbox4" id="checkbox4"></label>
+                    <label>매출액<input type="checkbox" name="checkbox5" id="checkbox5"></label>
+                    <label>개인/기관/외국인<input type="checkbox" name="checkbox6" id="checkbox6"></label>
                 </div>
             </div>
-            <button class = "other">분석</button>
+            <button id = "analysis">분석</button>
         </form>
         <br>
         {% if recommendations %}

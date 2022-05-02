@@ -96,9 +96,9 @@
                 <div class="result">
                     {% if user.is_authenticated %}
                         {% if request.user in result.likeUsers.all %}       
-                        <a href="{% url 'stockLikeSearch' result.stockCode %}"><button class = "remove" onclick="removeAlert()">삭제</button></a>
+                        <a href="{% url 'addOrRemove' result.stockCode %}"><button class = "remove" onclick="removeAlert()">삭제</button></a>
                         {% else %}
-                        <a href="{% url 'stockLikeSearch' result.stockCode %}"><button class = "add" onclick="addAlert()">추가</button></a>
+                        <a href="{% url 'addOrRemove' result.stockCode %}"><button class = "add" onclick="addAlert()">추가</button></a>
                         {% endif %}
                     {% else %}
                     <a href="{% url 'signIn' %}"><button class = "add" onclick="signInAlert()">추가</button></a>

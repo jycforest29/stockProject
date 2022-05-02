@@ -24,7 +24,7 @@ def signUp(request):
             return redirect('index')
     return render(request, 'user/signUp.html', {'form':form})
 
-def signIn(request):
+def signIn(request): 
     form = SignInForm() 
     if request.method == 'POST':
         # user = authenticate(request, username = username, password = password)
