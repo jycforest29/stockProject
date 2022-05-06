@@ -7,16 +7,18 @@
 주요 기능<br>
  1. 백테스팅<br>
  2. 커뮤니티<br>
- 3. 코스피 대비 전날 등락률 확인 가능
+ 
 
 <h1> 사용한 기술</h1>
-프론트: html, css, js<br>
-백: django<br>
+front-end: html, css, js<br>
+back-end: django<br>
 개발 환경: visual studio code<br>
+db: mysql(직접 sql구문 작성보다는 orm으로 사용)<br>
 
-<h1> 사용한 lib 및 데이터</h1>
+<h1> 사용한 오픈소스 및 데이터</h1>
 open api: yfinance<br>
-lib: numpy, matplotlib<br>
-csv 파일: krx - 주식 기본 정보<br>
+lib: numpy, matplotlib, mpld3 등<br>
+데이터: krx - 주식 기본 정보<br>
 
 <h1>프로젝트 구조</h1>
+<h1>앱별 상세 기능 및 구현방법</h1>
