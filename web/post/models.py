@@ -1,6 +1,7 @@
 from django.db import models
 from user.models import User
 from stock.models import Stock
+from django.utils import timezone
 
 # Create your models here.
 strategyType = [
@@ -18,7 +19,7 @@ class Post(models.Model):
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE, related_name="postStock")    
     strategy = models.CharField(max_length=3, choices=strategyType, default = "중립")
     createdAt = models.DateTimeField(auto_now_add=True)
-    updatedAt = models.DateTimeField(auto_now=True)
+    updatedAt = models.DateTimeField(default = timezone.now)
     likeUsers = models.ManyToManyField(User, related_name="postLikeUsers")
     likeCount = models.PositiveIntegerField(default = 0)
     commentCount = models.PositiveIntegerField(default = 0) 

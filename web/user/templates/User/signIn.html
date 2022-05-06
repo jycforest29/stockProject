@@ -58,6 +58,15 @@
     <hr>    
     <form action="{% url 'signIn' %}" method="post">
         {% csrf_token %}
+        {% for field in form %}                
+        {% if field.errors %}
+        {% for error in field.errors %}
+        <script>
+            alert('{{error}}');
+        </script>
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
         <div class="container">
             <div class = "col">
                 {% for field in form %}
@@ -67,9 +76,6 @@
             <div class = "row">
                 {% for field in form %}
                 {{field}}<br>
-                {% if field.errors %}
-                {{field.errors}}
-                {% endif %}
                 {% endfor %}
             </div>
             <span id = "signUpLink"><a href="{% url 'signUp' %}">회원가입</a></span><br>

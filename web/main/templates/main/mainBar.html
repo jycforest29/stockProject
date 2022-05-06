@@ -6,9 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        /* 중복 */
         div{
             display: inline-block;
         }
+        /* 중복 */
         a, a:visited, a:hover, a:active {
             text-decoration: none;
             color: inherit;
@@ -18,7 +20,7 @@
             height: 100px;
             background-color: rgb(183, 205, 220);
         }
-        #name{
+        #web{
             position: absolute;
             top:35px;
             left: 11px;
@@ -26,6 +28,11 @@
             font-weight: 500;
         }
         #sign{
+            position: absolute;
+            top:65px;
+            right:217px;
+        }
+        #evaluate{
             position: absolute;
             top:65px;
             right:126px;
@@ -39,12 +46,13 @@
 </head>
 <body>
     <div id="mainBar">
-        <span id = "name"><a href="{% url 'index' %}">이름뭘로할까</a></span>
+        <span id = "web"><a href="{% url 'index' %}">이름뭘로할까</a></span>
         {% if user.is_authenticated %}      
-        <span id = "sign">{{request.user.username}}님 <a href="{% url 'signOut' %}">로그아웃</a></span><br>
-        <span id = "myPage"><a href="{% url 'detailMyPage' %}">마이페이지</a></span>
+            <span id = "sign">{{request.user.username}}님 <a href="{% url 'signOut' %}">로그아웃</a></span><br>
+            <span id = "evaluate"><a href="{% url 'evaluate' %}">포트폴리오</a></span>
+            <span id = "myPage"><a href="{% url 'detailMyPage' %}">마이페이지</a></span>        
         {% else %}
-        <span id = "sign"><a href="{% url 'signIn' %}">로그인</a></span><br> 
+            <span id = "sign"><a href="{% url 'signIn' %}">로그인</a></span><br> 
         {% endif %}
      </div>    
 </body>

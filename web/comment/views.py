@@ -2,7 +2,8 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 from .models import Comment
 from post.models import Post
-from .forms import CommentForm
+from .forms import CommentForm, EditForm
+from django.utils import timezone
 
 # Create your views here.
 
@@ -20,19 +21,26 @@ def newComment(request, postPk):
     else:
         raise Http404('코멘트 작성 메서드 에러') 
 
+def reComment(request, commentPk, postPk):
+    return redirect('detailPost', postPk)
+
 def editComment(request, commentPk, postPk): 
-    editForm = CommentForm()
+    editForm = EditForm()
     post = Post.objects.get(pk = postPk)
     comments = Comment.objects.filter(post = post)
+    comment = Comment.objects.get(pk = commentPk)
     if request.method == 'POST':
-        editForm = CommentForm(request.POST)
-        if editForm.is_valid():
-            content = editForm.cleaned_data['content']
-            comment = Comment.objects.get(pk = commentPk)
-            comment.content = content
-            comment.save() 
-            return redirect('detailPost', postPk)
-    return render(request, 'post/detailPost.html', {'post':post,'comments':comments, 'editForm':editForm})
+        editForm = EditForm(request.POST)
+        editCmtValue = request.POST.get('editCmtValue')
+        if editCmtValue == '':
+            cmtError = '댓글 내용이 있어야함'
+            return render(request, 'post/detailPost.html', {'post':post,'comments':comments, 'editForm':editForm, 'commentPk': commentPk, 'cmtError':cmtError})
+        comment.content = editCmtValue
+        comment.updatedAt = timezone.now()
+        comment.save() 
+        return redirect('detailPost', postPk)
+
+    return render(request, 'post/detailPost.html', {'post':post,'comments':comments, 'editForm':editForm, 'commentPk': commentPk})
 
 def deleteComment(request, commentPk, postPk):
     comment = Comment.objects.get(pk = commentPk)

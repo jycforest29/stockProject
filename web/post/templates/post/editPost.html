@@ -12,14 +12,22 @@
             left: 450px;
             width: 650px;
             font-size: large;
+            align-content:flex-start;
         } 
-        .titleCss{
-            width: 450px;
+        #mdfContainer{
+            margin-left: 71px;
+            margin-top: -43px;
+        }
+        #title{
+            width: 400px;
             height: 25px;
         }
-        .contentCss{
-            width: 500px;
-            height: 250px;
+        #content{
+            width: 400px;
+            height: 130px;            
+            margin-top: 11px;
+            align-content: flex-start;
+            resize: none;
         }
         #label{
             margin-top: 11px;
@@ -28,33 +36,36 @@
             margin-top: 11px;
             margin-left: 11px;
         } 
-        #otherFieldTmp{
-            margin-top: 11px;
-            margin-left: 66px;
-        }               
-        #contentField{
-            margin-left: 111px;
-        }
         #mdfBtn{
-            /* position: absolute;
-            top: 195px;
-            left: 234px; */
             background-color:rgb(103, 158, 195);
             width: 65px;
             height: 40px;
             border: 1px solid rgb(103, 158, 195);
             border-radius:11px;
-            margin-top: 11px;
+            margin-top: 16px;
             margin-left: 250px;
         }
+        .modal{
+            width: 160px;
+            height: 100px;
+            position: absolute;
+            top: 50px;
+            left: 230px;
+            background-color: blueviolet;
+            display: none;
+        }
+        .modal.show{
+            display: block; 
+        }
     </style>
+    <!-- <script src="//code.jquery.com/jquery-3.3.1.min.js"></script> -->
 </head>
 <body>    
     {% include 'main/mainBar.html' %}
     <form action="{% url 'editPost' post.pk %}" method="post">
         {% csrf_token %}
         <div class="container">
-            <div id="label">
+            <div id="label"> 
                 종목명<br>
                 작성자<br>
                 작성자 타입<br>
@@ -73,23 +84,51 @@
                 {% else %}
                 {{post.updatedAt}}({{post.createdAt}})<br>
                 {% endif %}
-            </div><br>            
-            {% for field in editForm %}
-                <div id = "labelTmp">{{field.label}}</div>
-                {% if field.label == '내용' %}
-                <br>
-                <div id="contentField">
-                    {{field}}
+            </div><br>                         
+            제목<br>
+            내용<br>
+            의견
+            <div id = "mdfContainer">
+                <div id = "otherFieldTmp">
+                    <input type="text" value = "{{post.title}}" id = "title" name ="title" maxlength="30">
                 </div><br>
-                {% else %}
-                <div id = "otherFieldTmp">{{field}}</div><br>
-                {% endif %}
-                {% if field.errors %}
-                {{field.errors}}
-                {% endif %} 
-            {% endfor %}                   
+                <div id="contentField">                     
+                    <textarea id="content" name ="content" cols="30" rows="11" maxlength = "330">{{post.content}}</textarea>
+                </div><br>                
+                <div id = "otherFieldTmp">                    
+                    <select name="strategy" id="strategy" name="strategy">
+                        <option value="매수">매수</option>
+                        <option value="중립">중립</option>
+                        <option value="매도">매도</option>
+                    </select>
+                </div><br>
+            </div>             
             <button id = "mdfBtn">수정</button>
+            {{error}}
+            <div class="modal">
+                수정되었습니다
+                <button id = "modalBtn">확인</button>
+            </div>
+            <script>
+                $("#mdfBtn").addEventListener("click", () => {
+                    alert('hi');
+                    // (".modal").style.display = 'block';
+                })
+                // $("#modalBtn").addEventListener("click", () => {
+                //     (".modal").removeClass("show");
+                // })
+            </script>
+            {% if editTError %}
+            <script>
+              alert('{{editTError}}');
+            </script>
+            {% endif %}
+            {% if editCError %}
+            <script>
+              alert('{{editCError}}');
+            </script>
+            {% endif %}
         </div>        
-    </form>
+    </form> 
 </body>
 </html>

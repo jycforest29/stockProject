@@ -8,6 +8,7 @@ from stock.models import Stock
 from .models import Post
 from comment.models import Comment
 from django.http import Http404
+from django.utils import timezone
 
 # Create your views here.
 
@@ -41,26 +42,32 @@ def newPost(request, stockCode):
     return render(request, 'post/newPost.html', {'postForm':postForm, 'stock':stock})        
 
 def editPost(request, postPk):
-    editForm = PostForm() 
     post = Post.objects.get(pk = postPk)
     if request.method == 'POST':
-        editForm = PostForm(request.POST)
-        if editForm.is_valid():
-            post.title = editForm.cleaned_data['title']
-            post.content = editForm.cleaned_data['content']
-            post.strategy = editForm.cleaned_data['strategy']
-            post.save()
-            return redirect('detailPost', post.pk)
-    # 하나는 html에 필요한 변수, 하나는 매개변수 - 적용안함?        
-    return render(request, 'post/editPost.html', {'editForm':editForm, 'post':post})  
+        titleTmp = request.POST.get('title')
+        contentTmp = request.POST.get('content')
+        strategyTmp = request.POST.get('strategy') 
+        if titleTmp != '':
+            post.title = titleTmp
+        else:
+            editTError = '제목이 비어있으면 안됨'
+            return render(request, 'post/editPost.html',{'post':post, 'editTError':editTError})  
+        if len(contentTmp)!= 0:
+            post.content = contentTmp
+        else:
+            editCError = '내용이 비어있으면 안됨'
+            return render(request, 'post/editPost.html',{'post':post, 'editCError':editCError})  
+        post.strategy = strategyTmp
+        post.updatedAt = timezone.now()
+        post.save()
+        return redirect('detailPost', post.pk)
+       
+    return render(request, 'post/editPost.html',{'post':post})  
  
 def deletePost(request, postPk, stockCode):
     post = Post.objects.get(pk = postPk)
     post.delete()
     return redirect('stockInfo', stockCode)
-
-def reComment(request, commentPk, postPk):
-    return redirect('detailPost', postPk)
 
 def likePost(request, postPk): 
     if request.method == 'POST':

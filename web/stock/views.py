@@ -9,6 +9,8 @@ import numpy as np
 import mpld3
 import datetime as dt
 from sklearn import preprocessing
+from user.views import findStockType
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -137,6 +139,14 @@ def stockAnalysis(request, stockCode):
     else:
         raise Http404('가격 조회 메서드 에러')
 
+def checkOpinion(posts):
+    postsBuy = posts.filter(strategy = '매수').count()    
+    postsHold = posts.filter(strategy = '중립').count()       
+    postsSell = posts.filter(strategy = '매도').count()
+    postsStrategySum = sum([postsBuy,postsHold,postsSell] )       
+    opinion = '매수: '+ str(0 if postsBuy ==0 else int(postsBuy / postsStrategySum*100)) + ' 중립: '+ str(0 if postsHold ==0 else int(postsHold / postsStrategySum*100)) + ' 매도: '+ str(0 if postsSell ==0 else int(postsSell / postsStrategySum*100))
+    return opinion
+
 # 검색한 종목의 기본적인 정보 리턴하는 함수
 def stockInfo(request, stockCode):
     # 검색량 상위 5개안에 드는 주식들 찾기 위해 stockInfo 페이지 클릭시마다 searchTop5 딕셔너리에 더함
@@ -156,15 +166,30 @@ def stockInfo(request, stockCode):
         userInStock = True
         
     # 해당 주식의 게시글에는 매수/중립/매도의견이 각각 몇 %였는지    
-    posts = Post.objects.filter(stock = stockData)    
-    postsBuy = posts.filter(strategy = '매수').count()    
-    postsHold = posts.filter(strategy = '중립').count()       
-    postsSell = posts.filter(strategy = '매도').count()
-    postsStrategySum = sum([postsBuy,postsHold,postsSell] )       
-    strategyText = '매수: '+ str(0 if postsBuy ==0 else int(postsBuy / postsStrategySum)*100) + ' 중립: '+ str(0 if postsHold ==0 else int(postsHold / postsStrategySum)*100) + ' 매도: '+ str(0 if postsSell ==0 else int(postsSell / postsStrategySum)*100)
-    
-    topPosts = posts.order_by('-likeCount')[:5]
-    return render(request, 'stock/stockInfo.html', {'stockData':stockData, 'startDate':startDate, 'endDate':endDate, 'userInStock':userInStock, 'posts':posts, 'strategyText':strategyText, 'topPosts':topPosts})
+    posts = Post.objects.filter(stock = stockData)   
+    opinion = checkOpinion(posts)
+
+    paginator = Paginator(posts, 5) 
+    pageNumber = request.GET.get('page')
+    pageObj = paginator.get_page(pageNumber)
+    totalPage = len(posts) // 5
+    pageRange = range(1, totalPage+2)
+
+    topPosts =posts.order_by('-likeCount')[:5]
+    topPostSum = len(topPosts)
+    topPostBuy = 0
+    topPostHold = 0
+    topPostSell = 0
+    for post in topPosts:
+        if post.strategy == '매수':
+            topPostBuy += 1
+        elif post.strategy == '중립':
+            topPostHold += 1
+        else:
+            topPostSell += 1
+    topOpinion = '매수: '+ str(0 if topPostBuy ==0 else int(topPostBuy / topPostSum*100)) + ' 중립: '+ str(0 if topPostHold ==0 else int(topPostHold / topPostSum*100)) + ' 매도: '+ str(0 if topPostSell ==0 else int(topPostSell / topPostSum*100))
+
+    return render(request, 'stock/stockInfo.html', {'stockData':stockData, 'startDate':startDate, 'endDate':endDate, 'userInStock':userInStock, 'posts':posts, 'pageObj':pageObj, 'pageRange':pageRange, 'opinion':opinion, 'topPosts':topPosts, 'topOpinion':topOpinion})
 
 # 주식 좋아요
 def stockLike(request, stockCode):
@@ -176,6 +201,9 @@ def stockLike(request, stockCode):
         stock.likeUsers.add(request.user)
         stock.likeCount += 1    
     stock.save()  
+    likeStocks = Stock.objects.filter(likeUsers__in = [request.user.pk]).order_by('likeCount')  
+    findStockType(likeStocks)
+    
     return redirect('stockInfo', stockCode)
 
  
