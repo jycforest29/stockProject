@@ -7,7 +7,6 @@
 주요 기능<br>
  1. 백테스팅<br>
  2. 커뮤니티<br>
- 
 
 <h1> 사용한 기술</h1>
 front-end: html, css, js<br>
@@ -22,3 +21,8 @@ lib: numpy, matplotlib, mpld3 등<br>
 
 <h1>프로젝트 구조</h1>
 <h1>앱별 상세 기능 및 구현방법</h1>
+main - 홈, 검색 <br>
+stock - 주식 정보 및 분석<br>
+user - 회원 관련<br>
+post - 글 작성 관련<br>
+comment - 댓글 작성 관련
