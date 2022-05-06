@@ -1,5 +1,8 @@
 # stockProject
 주식 분석 웹사이트
+<br>
+계획: (금-오늘) 배포 - (토) 리팩토링 및 리드미, 기술블로그 작성 (일) 애널리스트 추천도 그래프에 추가 /분석 인덱스 추가 - stockinfo /포트폴리오 추가
+
 <h1> 프로젝트 소개</h1>
 인원: 1인 개발<br>
 개발 기간: 2-3주<br>
@@ -16,7 +19,7 @@ db: mysql(직접 sql구문 작성보다는 orm으로 사용)<br>
 
 <h1> 사용한 오픈소스 및 데이터</h1>
 open api: yfinance<br>
-lib: numpy, matplotlib, mpld3 등<br>
+lib: pandas, numpy, matplotlib, mpld3, apscheduler등<br>
 데이터: krx - 주식 기본 정보<br>
 
 <h1>프로젝트 구조</h1>
