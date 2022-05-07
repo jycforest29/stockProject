@@ -1,0 +1,86 @@
+  .mdfBtn{ 
+    background-color:rgb(103, 158, 195);
+    width: 55px;
+    height: 35px;
+    border: 1px solid rgb(103, 158, 195);
+    border-radius:11px;
+    position: absolute;
+    top: 325px;
+    left: 900px;       
+  }
+  .delBtn{ 
+    background-color:rgb(161, 195, 103);
+    width: 49px;
+    height: 35px;
+    border: 1px solid rgb(161, 195, 103);
+    border-radius:11px;
+    position: absolute;
+    top: 325px;
+    left: 960px;              
+  }    
+  .cmtCss{
+    width: 475px;
+    height: 25px;
+  }
+  .editCmtCss{
+    width: 475px;
+    height: 25px;
+    margin-left: 50px;
+  }
+  .cmtBtn{
+    border: none;
+  }
+  .container{
+    position: absolute;
+    top: 161px;
+    left: 450px;
+    width: 600px;
+    font-size: large;
+  } 
+  .commenter{
+    font-weight: 600;
+  }
+  .cmtWriteBtn{
+    background-color:rgb(228, 239, 166);
+    width: 50px;
+    height: 39px;
+    border-radius:16px;
+    border: 1.6px solid rgb(128, 144, 36);
+  }
+  .likeCancelBtn{
+    background-color:rgb(103, 158, 195);
+    width: 90px;
+    height: 35px;
+    border: 1px solid rgb(103, 158, 195);
+    border-radius:11px;
+    position: absolute;
+    top: 325px;
+    left: 900px;   
+  }
+  #editForm{
+    margin-left: -50px;
+  }
+  #cmt{
+    font-size: large;
+  }
+  #cmtContainer{
+    margin-top: 245px;
+    margin-left: 450px;
+  }
+  #label{
+    margin-top: 11px; 
+  }
+  #otherField{
+    margin-top: 11px;
+    margin-left: 11px;
+  }
+  #cmtLine{
+    margin-left: -11px;
+    border:1.6px solid rgb(128, 144, 36);
+    width: 600px;
+  }
+  .cmtPerLine{
+    margin-left: -11px;
+    border:1px solid rgb(128, 144, 36);
+    width: 600px;
+  }

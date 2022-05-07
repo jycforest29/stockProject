@@ -1,3 +1,4 @@
+from sched import scheduler
 from django.http import Http404
 from django.shortcuts import render, redirect
 import pandas as pd
@@ -10,10 +11,8 @@ import mpld3
 import datetime as dt
 from sklearn import preprocessing
 from user.views import findStockType
-import json
-
-import schedule
-import time
+from apscheduler.schedulers.background import BackgroundScheduler
+from django.views.decorators.cache import cache_control
 
 searchRanking = []
 likeRanking = []
@@ -38,11 +37,10 @@ def initSetting():
             stockNum = df.loc[i][11]
         )
 
-# 30분 단위로 바뀌는 값 재설정 - 인기 검색 종목, 인기 조회 종목
-def per30min():
+def per5min():
     from stock.views import searchTop5 
     global likeRanking, searchRanking
-
+    
     likeRanking = Stock.objects.filter(likeCount__gte = 1).order_by('likeCount')[:5]
     searchRanking = []
     stocks = sorted(searchTop5.items(), key = lambda item: item[1], reverse = True)[:5]
@@ -71,6 +69,7 @@ def search(request):
 #         stock.likeCount += 1    
 #     stock.save()    
 
+@cache_control(no_cache = True, must_revalidate = True)
 def addOrRemove(request, stockCode):    
     stock = Stock.objects.get(stockCode = stockCode)
     if request.user in stock.likeUsers.all():
@@ -98,24 +97,33 @@ def likeStockAnalysis(likes):
     likesAfter = []
     likesName = []
     
+    start = dt.date.today()-dt.timedelta(days = i+1)
+    startMid = dt.date.today()-dt.timedelta(days = i)
+    endMid = dt.date.today()-dt.timedelta(days = i)
+    end = dt.date.today()-dt.timedelta(days = (i-1))
     # 현재 날짜로부터 yf로부터 주가 데이터를 갖고올 수 있는 가장 빠른 날짜와 그 전날 날짜를 찾음(주말 제외 포함)
     while True:
-        # /금월 케이스 고려 안됨
-        start = dt.date.today()-dt.timedelta(days = i+1)
-        mid = dt.date.today()-dt.timedelta(days = i)
-        end = dt.date.today()-dt.timedelta(days = (i-1))
-        print(start, mid, end)
-        kospiBefore = yf.download('^KS11', start = start, end = mid)['Adj Close']
-        kospiAfter = yf.download('^KS11', start = mid, end = end)['Adj Close']
+        kospiBefore = yf.download('^KS11', start = start, end = startMid)['Adj Close']
+        kospiAfter = yf.download('^KS11', start = endMid, end = end)['Adj Close']
         if kospiBefore.size != 0 and kospiAfter.size != 0:
             break
+        else:
+            # 공휴일이나 주말이 끼어있을 때
+            if kospiBefore.size == 0 and kospiAfter.size != 0:
+                start = dt.date.today()-dt.timedelta(days = i+1)
+                startMid = dt.date.today()-dt.timedelta(days = i)                
+            else:
+                start = dt.date.today()-dt.timedelta(days = i+1)
+                startMid = dt.date.today()-dt.timedelta(days = i)
+                endMid = dt.date.today()-dt.timedelta(days = i)
+                end = dt.date.today()-dt.timedelta(days = (i-1))
         i += 1
-
+    
     # 각 날짜들에 맞는 데이터 다운로드, 변화 정도로 값 변환
     kospi = 100*round((kospiAfter[0] - kospiBefore.iloc[0])/(kospiBefore[0]), 2)    
     for i in likes:
-        likesBefore.append(yf.download(i.stockCode+'.KS', start = start, end = mid)['Adj Close'])
-        likesAfter.append(yf.download(i.stockCode+'.KS', start = mid, end = end)['Adj Close'])
+        likesBefore.append(yf.download(i.stockCode+'.KS', start = start, end = startMid)['Adj Close'])
+        likesAfter.append(yf.download(i.stockCode+'.KS', start = endMid, end = end)['Adj Close'])
         likesName.append(i.stockName)
     for i in range(len(likesAfter)):
         likesResult.append(100*round( (likesAfter[i][0] - likesBefore[i][0])/likesBefore[i][0] , 2))
@@ -138,18 +146,25 @@ def likeStockAnalysis(likes):
     plt.ylabel('%')
     plt.legend()
     pltTag = mpld3.fig_to_html(fig)
-    # htmlFile = open("main/templates/main/likeStockAnalysis.html", "w")
-    # htmlFile.write(htmlTmp)
-    # htmlFile.close() 
+    htmlFile = open("main/templates/main/likeStockAnalysis.html", "w")
+    htmlFile.write(pltTag)
+    htmlFile.close() 
+
     
 def index(request):
     # initSetting()
     from user.views import highStocks, midStocks, lowStocks
     likeStocks = Stock.objects.filter(likeUsers__in = [request.user.pk]).order_by('likeCount')
     
+    sched = BackgroundScheduler()
+    sched.add_job(per5min, 'interval', minutes = 5, id = 'per5min')
+    sched.start()
     # likeStockAnalysis(likeStocks)
     # pltTagTmp = '''<DOCTYPE html><html><head><meta charset = "utf-8"></head><body>'''+pltTag+'''</body></html>'''
-    # print(pltTag)
-    per30min()
+    # print(pltTag) 
+    # schedule.every(30).seconds.do(per30min)
+    # while True:
+    #     per30min()
+    #     time.sleep(60)
     
-    return render(request, 'main/index.html', {'likeRanking':likeRanking, 's':highStocks,'midStocks':midStocks,'lowStocks':lowStocks, 'searchRanking':searchRanking, 'pltTag':pltTag}) 
+    return render(request, 'main/index.html', {'likeRanking':likeRanking, 'highStocks':highStocks,'midStocks':midStocks,'lowStocks':lowStocks, 'searchRanking':searchRanking, 'pltTag':pltTag}) 

@@ -1,0 +1,44 @@
+hr{
+    position: absolute;
+    top: 252px;
+    left: 576px;
+    width: 300px;
+    border: 0.5px solid black;
+}
+button{
+    background-color:rgb(145, 191, 222);
+    width: 60px;
+    height: 35px;
+    border-radius:11px;
+    margin-left: 89px;
+    margin-top:40px; 
+}
+.title{
+    position: absolute;
+    top: 216px;
+    left: 675px;
+    font-size: x-large;
+}
+.container{
+    position: absolute;
+    top: 275px;
+    left: 600px;
+    width: 300px;
+    font-size: large;
+}
+.col{
+    margin-top: 5px;
+    text-align: right;
+    float: left;
+}
+.row{
+    margin-left: 8px;
+    text-align: left;
+}
+#signUpLink{
+    position: absolute;
+    top:64px;
+    left:85px;
+    font-size: medium;
+    color: rgb(89, 142, 189); 
+}

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,149 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    
-    <style>        
-        /* searchBar */
-        /* 공통 */
-        a, a:visited, a:hover, a:active {
-            text-decoration: none;
-            color: inherit;
-        }
-        /* 공통 */
-        .hrBar{
-         margin-left: 250px;
-         margin-top: 30px;
-         width: 1000px;
-         border: 1px solid rgb(25, 120, 184);
-        }  
-        /* 공통 */
-        .btn{
-            background-color:rgb(103, 158, 195);
-            width: 55px;
-            height: 35px;
-            border: 1px solid rgb(103, 158, 195);
-            border-radius:11px;
-        }
-        /* 공통 */
-        .searchBar{
-         margin-top: 36px;
-         margin-left: 550px;
-        }  
-        /* 공통 */      
-        .keyword{
-            width: 300px;
-            height: 29px;
-            border-radius: 5px;
-        }        
-        .addBtn{ 
-            background-color:#ffffff;
-            width: 49px;
-            height: 35px;
-            border: 1px solid rgb(103, 158, 195);
-            border-radius:11px;
-            margin-top:5px;            
-        }
-        .signInBtn{ 
-            background-color:#ffffff;
-            width: 49px;
-            height: 35px;
-            border: 1px solid rgb(103, 158, 195);
-            border-radius:11px;
-            margin-top:5px;            
-        }
-        .addBtn:hover{
-            background-color:rgb(103, 158, 195);
-        }
-        .signInBtn:hover{
-            background-color:rgb(103, 158, 195);
-        }
-        .removeBtn{ 
-            background-color:#ffffff;
-            width: 49px;
-            height: 35px;
-            border: 1px solid rgb(213, 166, 207);
-            border-radius:11px;
-            margin-top:5px;            
-        }
-        .removeBtn:hover{
-            background-color:rgb(213, 166, 207);
-        }
-        .noResult{
-            position: absolute;
-            top: 240px;
-            left: 606px;
-            font-size: large;
-        }
-        .modal{
-            width: 350px;
-            height: 225px;
-            position: absolute;
-            top: 160px;
-            left: 550px;
-            background-color: rgb(240, 241, 244);
-            border-radius: 11px solid rgb(240, 241, 244);
-            z-index: 1;            
-            display: none;
-        }
-        .addmodal{
-            width: 350px;
-            height: 225px;
-            position: absolute;
-            top: 160px;
-            left: 550px;
-            background-color: rgb(32, 58, 134);
-            border-radius: 11px solid rgb(36, 52, 98);
-            z-index: 1;            
-            display: none;
-        }
-        .title{
-            position: absolute;
-            top: 60px;
-            left: 55px;
-            font-size: 24px;       
-            text-align: center;     
-        }  
-        .modalBtn{
-            background-color:rgb(103, 158, 195);
-            width: 55px;
-            height: 35px;
-            border: 1px solid rgb(103, 158, 195);
-            border-radius:11px;
-            margin-left: 135px;
-            margin-top: 130px;
-        }
-        .closeBtn{
-            position: absolute;
-            top: 5px;
-            left: 325px;
-            border: none;
-            font-size: large;
-        }
-        #searchHr{
-            margin-left: 0px;
-            width: 500px;
-            border: 0.5px solid black;
-        }
-        #resultContainer{
-            margin-left:480px;
-            width: 600px;
-        }
-        #result{
-            text-align: left;
-        }        
-        #kospi{
-            font-weight: 600;
-        }        
-        .addModal.active{
-            display: flex;
-        }
-        #removeModal.active{
-            display: flex;
-        }
-        #signInModal.active{
-            display: flex;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'main/search.css' %}">
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 </head>
 <body>    
     {% include 'main/mainBar.html' %}
@@ -167,7 +27,7 @@
                         {% if request.user in result.likeUsers.all %}       
                             <a href="{% url 'addOrRemove' result.stockCode %}"><button class = "removeBtn" >삭제</button></a>
                         {% else %}
-                            <a href="{% url 'addOrRemove' result.stockCode %}"><button class = "addBtn">추가</button></a>
+                            <a href="{% url 'addOrRemove' result.stockCode %}"><button class = "addBtn" id = "addBtn">추가</button></a>
                         {% endif %}
                     {% else %}
                         <a href="{% url 'signIn' %}"><button class = "signInBtn">추가</button></a>
@@ -184,7 +44,7 @@
             <span class = "noResult">검색어를 다시 입력해주세요</span> 
         {% endif %}
     </div>
-    <div class = "addModal">
+    <div class="modal" id = "addModal">
         <button class = "addCloseBtn">X</button>
         <div class = "title">추가되었습니다</div>
         <button class = "modalBtn">확인</button>
@@ -194,27 +54,13 @@
         <div class = "title">삭제되었습니다</div>
         <button class = "modalBtn">확인</button>
     </div>
-    <div class="modal" id = "signInModal">
+    <div class="modal" id = "signInModal">z
         <button class = "closeBtn">X</button>
         <div class = "title">로그인이 필요합니다</div>
         <button class = "modalBtn">확인</button>
     </div>
     <script>
-        const add = document.querySelector('.addBtn');
-        const addClose = document.querySelector('.addCloseBtn');
-
-        add.addEventListener("click", () => {    
-            (".addModal").addClass("active")
-        })
-        addClose.addEventListener("click", () => {    
-            (".addModal").removeClass("active")
-        })
-        $(".removeBtn").click(function(){
-            $("#removeModal").addClass("active")
-        })
-        $(".signInBtn").click(function(){
-            $("#signInModal").addClass("active")
-        })
+        const addModal = document.getElementById("addModal");
     </script>
 </body>
 </html> 

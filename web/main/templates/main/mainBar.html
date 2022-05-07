@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,54 +6,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <style>
-        /* 중복 */
-        div{
-            display: inline-block;
-        }
-        /* 중복 */
-        a, a:visited, a:hover, a:active {
-            text-decoration: none;
-            color: inherit;
-        }  
-        #mainBar{
-            width: 100%;
-            height: 100px;
-            background-color: rgb(183, 205, 220);
-        }
-        #web{
-            position: absolute;
-            top:35px;
-            left: 11px;
-            font-size: x-large;
-            font-weight: 500;
-        }
-        #sign{
-            position: absolute;
-            top:65px;
-            right:217px;
-        }
-        #evaluate{
-            position: absolute;
-            top:65px;
-            right:126px;
-        }
-        #myPage{
-            position: absolute;
-            top:65px;
-            right:35px;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'main/mainBar.css' %}">
 </head>
 <body>
     <div id="mainBar">
-        <span id = "web"><a href="{% url 'index' %}">이름뭘로할까</a></span>
+        <span id = "web"><a href="{% url 'index' %}">주식분석웹사이트</a></span>
         {% if user.is_authenticated %}      
             <span id = "sign">{{request.user.username}}님 <a href="{% url 'signOut' %}">로그아웃</a></span><br>
-            <span id = "evaluate"><a href="{% url 'evaluate' %}">포트폴리오</a></span>
+            <!-- <span id = "evaluate"><a href="{% url 'evaluate' %}">포트폴리오</a></span> -->
             <span id = "myPage"><a href="{% url 'detailMyPage' %}">마이페이지</a></span>        
         {% else %}
-            <span id = "sign"><a href="{% url 'signIn' %}">로그인</a></span><br> 
+            <span class = "sign"><a href="{% url 'signIn' %}">로그인</a></span><br> 
         {% endif %}
      </div>    
 </body>

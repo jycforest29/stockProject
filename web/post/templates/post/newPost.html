@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,45 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <style>
-        .container{
-            position: absolute;
-            top: 161px;
-            left: 450px;
-            width: 600px;
-            font-size: large;
-        } 
-        .titleCss{
-            width: 450px;
-            height: 25px;
-        }
-        .contentCss{
-            width: 500px;
-            height: 250px;
-        }
-        .strategyCss{
-            
-        }
-        .postWrite{ 
-            background-color:rgb(103, 158, 195);
-            width: 65px;
-            height: 40px;
-            border: 1px solid rgb(103, 158, 195);
-            border-radius:11px;
-            margin-left:250px;
-            margin-top:30px;
-        }
-        #label{
-            margin-top: 11px;
-        }
-        #contentField{
-            margin-left: 51px;
-        }
-        #otherField{
-            margin-top: 11px;
-            margin-left: 11px;
-        }
-    </style> 
+    <link rel="stylesheet" type="text/css" href="{% static 'post/newPost.css' %}">
 </head>
 <body>
     {% include 'main/mainBar.html' %}

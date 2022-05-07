@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,59 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <style>
-        .container{
-            position: absolute;
-            top: 161px;
-            left: 450px;
-            width: 650px;
-            font-size: large;
-            align-content:flex-start;
-        } 
-        #mdfContainer{
-            margin-left: 71px;
-            margin-top: -43px;
-        }
-        #title{
-            width: 400px;
-            height: 25px;
-        }
-        #content{
-            width: 400px;
-            height: 130px;            
-            margin-top: 11px;
-            align-content: flex-start;
-            resize: none;
-        }
-        #label{
-            margin-top: 11px;
-        }
-        #otherField{
-            margin-top: 11px;
-            margin-left: 11px;
-        } 
-        #mdfBtn{
-            background-color:rgb(103, 158, 195);
-            width: 65px;
-            height: 40px;
-            border: 1px solid rgb(103, 158, 195);
-            border-radius:11px;
-            margin-top: 16px;
-            margin-left: 250px;
-        }
-        .modal{
-            width: 160px;
-            height: 100px;
-            position: absolute;
-            top: 50px;
-            left: 230px;
-            background-color: blueviolet;
-            display: none;
-        }
-        .modal.show{
-            display: block; 
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'post/editPost.css' %}">
     <!-- <script src="//code.jquery.com/jquery-3.3.1.min.js"></script> -->
 </head>
 <body>    
@@ -67,7 +16,7 @@
         <div class="container">
             <div id="label"> 
                 종목명<br>
-                작성자<br>
+                작성자<br> 
                 작성자 타입<br>
                 {% if post.createdAt == post.updatedAt %}
                 작성일자<br> 
@@ -104,29 +53,56 @@
                 </div><br>
             </div>             
             <button id = "mdfBtn">수정</button>
-            {{error}}
-            <div class="modal">
-                수정되었습니다
-                <button id = "modalBtn">확인</button>
+            <!-- ------------------------------------modal----------------------------------- -->
+            <div id="modal">
+                <div id="box">
+                    {% if editTError %}  
+                    <div class="title">{{editTError}}</div>
+                    {% elif editCError %}
+                    <div class="title">{{editCError}}</div>
+                    {% else %}
+                    <div class="title">수정되었습니다</div>       
+                    {% endif %}         
+                </div>
             </div>
+            {% if editTError %}        
+            <div id="editTError">
+                <button id = "editTErrorClose" class = "closeBtn">X</button>
+                <div class="box">
+                    <div class="title">{{editTError}}</div>                
+                </div>
+            </div>    
             <script>
-                $("#mdfBtn").addEventListener("click", () => {
-                    alert('hi');
-                    // (".modal").style.display = 'block';
+                const editTErrorClose = document.getElementById("editTErrorClose");
+                const editTError = document.getElementById("editTError");
+                editTErrorClose.addEventListener("click", () => {
+                    editTError.style.display = 'none';
                 })
-                // $("#modalBtn").addEventListener("click", () => {
-                //     (".modal").removeClass("show");
-                // })
             </script>
-            {% if editTError %}
-            <script>
-              alert('{{editTError}}');
-            </script>
-            {% endif %}
-            {% if editCError %}
-            <script>
-              alert('{{editCError}}');
-            </script>
+            {% else %}
+                {% if editCError %}
+                <div id="editCError">
+                    <button id = "editCErrorClose" class = "closeBtn">X</button>
+                    <div class="box">
+                        <div class="title">{{editCError}}</div>                
+                    </div>
+                </div>
+                <script>
+                    const editCErrorClose = document.getElementById("editCErrorClose");
+                    const editCError = document.getElementById("editCError");
+                    editCErrorClose.addEventListener("click", () => {
+                        editCError.style.display = 'none';
+                    })
+                </script>
+                {% else %}
+                <script> 
+                    const mdfBtn = document.getElementById("mdfBtn");
+                    const modal = document.getElementById("modal");
+                    mdfBtn.addEventListener("click", () => {
+                        modal.style.display = 'block';
+                    })       
+                </script>
+                {% endif %}
             {% endif %}
         </div>        
     </form> 

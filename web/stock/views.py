@@ -11,6 +11,7 @@ import datetime as dt
 from sklearn import preprocessing
 from user.views import findStockType
 from django.core.paginator import Paginator
+from django.views.decorators.cache import cache_control
 
 # Create your views here.
 
@@ -175,7 +176,7 @@ def stockInfo(request, stockCode):
     totalPage = len(posts) // 5
     pageRange = range(1, totalPage+2)
 
-    topPosts =posts.order_by('-likeCount')[:5]
+    topPosts =posts.filter(likeCount__gte = 5).order_by('-likeCount')[:5]
     topPostSum = len(topPosts)
     topPostBuy = 0
     topPostHold = 0
@@ -192,6 +193,7 @@ def stockInfo(request, stockCode):
     return render(request, 'stock/stockInfo.html', {'stockData':stockData, 'startDate':startDate, 'endDate':endDate, 'userInStock':userInStock, 'posts':posts, 'pageObj':pageObj, 'pageRange':pageRange, 'opinion':opinion, 'topPosts':topPosts, 'topOpinion':topOpinion})
 
 # 주식 좋아요
+@cache_control(no_cache = True, must_revalidate = True)
 def stockLike(request, stockCode):
     stock = Stock.objects.get(stockCode = stockCode)
     if request.user in stock.likeUsers.all():

@@ -9,10 +9,11 @@ from .models import Post
 from comment.models import Comment
 from django.http import Http404
 from django.utils import timezone
+from django.views.decorators.cache import cache_control
 
 # Create your views here.
 
-def detailPost(request, postPk):
+def detailPost(request, postPk): 
     post = Post.objects.get(pk = postPk)
     commentForm = CommentForm()
     userInPostLikes = False
@@ -22,6 +23,7 @@ def detailPost(request, postPk):
             userInPostLikes = True 
     return render(request, 'post/detailPost.html', {'post':post, 'userInPostLikes':userInPostLikes, 'commentForm':commentForm, 'comments':comments})
 
+@cache_control(no_cache = True, must_revalidate = True)
 def newPost(request, stockCode):
     postForm = PostForm()
     stock = Stock.objects.get(stockCode = stockCode)
@@ -41,6 +43,7 @@ def newPost(request, stockCode):
     # 하나는 html에 필요한 변수, 하나는 매개변수 - 매개변수여서라기 보다는 newPost.html에서 필요해서
     return render(request, 'post/newPost.html', {'postForm':postForm, 'stock':stock})        
 
+@cache_control(no_cache = True, must_revalidate = True)
 def editPost(request, postPk):
     post = Post.objects.get(pk = postPk)
     if request.method == 'POST':
@@ -64,11 +67,13 @@ def editPost(request, postPk):
        
     return render(request, 'post/editPost.html',{'post':post})  
  
+@cache_control(no_cache = True, must_revalidate = True)
 def deletePost(request, postPk, stockCode):
     post = Post.objects.get(pk = postPk)
     post.delete()
     return redirect('stockInfo', stockCode)
 
+@cache_control(no_cache = True, must_revalidate = True)
 def likePost(request, postPk): 
     if request.method == 'POST':
         post = Post.objects.get(pk = postPk)

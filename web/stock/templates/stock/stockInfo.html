@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,147 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-
-    <style>
-        div{
-           display: inline-block;
-        }
-        a, a:visited, a:hover, a:active {
-            text-decoration: none;
-            color: inherit;
-        }
-        table{
-            margin-top: -11px;
-        }
-        th{
-            text-align: right;
-        }
-        ul{
-            position: absolute;
-            top: 430px;
-            left: 850px;
-        }
-        li{
-            display: inline;
-            border: 1px solid rgba(0, 0, 0, 0.712);
-            padding: 5px;
-        }
-        .page-item-active{
-            background-color: rgb(206, 193, 174);
-        }
-        .col{
-            margin-top: 11px;
-            text-align: left;
-            float: left;
-        }
-        .row{
-            margin-top: 11px;
-            margin-left: 8px;
-            text-align: left;
-        }
-        .add{ 
-            background-color:#ffffff;
-            width: 49px;
-            height: 35px;
-            border: 1px solid rgb(103, 158, 195);
-            border-radius:11px;
-            margin-top: 25px;
-            margin-left: 50px;            
-        }
-        .add:hover{
-            background-color:rgb(103, 158, 195);
-        }
-        .remove{ 
-            background-color:#ffffff;
-            width: 49px;
-            height: 35px;
-            border: 1px solid rgb(213, 166, 207);
-            border-radius:11px;
-            margin-top: 25px;
-            margin-left: 50px;          
-        }
-        .remove:hover{
-            background-color:rgb(213, 166, 207);
-        }
-        #analysis{
-            background-color:ffffff;
-            width: 55px;
-            height: 35px;
-            border: 1px solid rgb(103, 158, 195);
-            border-radius:11px;
-        }
-        #analysis:hover{
-            background-color:rgb(103, 158, 195);
-        }
-        #write{
-            background-color:rgb(232, 225, 192);
-            width: 55px;
-            height: 25px;
-            border: 1px solid rgb(232, 225, 192);
-            border-radius:5px;
-        }
-        #searchBar{
-         margin-top: 36px;
-         margin-left: 550px;
-        }
-        #searchBarHr{
-         margin-left: 250px;
-         margin-top: 30px;
-         width: 1000px;
-         border: 1px solid rgb(25, 120, 184);
-        }  
-        #input{
-            width: 300px;
-            height: 29px;
-            border-radius: 5px;
-        }
-        #search{
-            background-color:rgb(103, 158, 195);
-            width: 55px;
-            height: 35px;
-            border: 1px solid rgb(103, 158, 195);
-            border-radius:11px;
-        }
-        #title{
-            font-size: x-large;
-            font-weight: 600;
-        }
-        #container{
-            margin-top: 30px;
-            margin-left: 300px;
-            display: flex;
-            padding: 11px; 
-            width: 900px;        
-        }
-        #sinfo{
-            flex: 0.3; 
-        }
-        #spostsTop{         
-            flex: 0.3;  
-        }
-        #spostsAll{         
-            flex: 0.3;  
-        }
-        #opinion, #topOpinion{
-            width: 200px;
-            height: 25px;
-            border: 3px solid rgb(57, 74, 80);
-            border-radius: 5px;
-            margin-top: 5px;
-            margin-bottom: 5px;
-        }
-        
-        #sanalysis{            
-            margin-top: 50px;
-            margin-left: 400px;
-            border: 3px solid rgb(148, 196, 212);
-            border-radius: 5px;
-            width: 700px;
-            height: 50px;
-            text-align: center;
-            padding-top: 11px;
-        }
-     </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'stock/stockInfo.css' %}">
 </head>
 <body>
     {% include 'main/mainBar.html' %}
@@ -270,9 +131,9 @@
                     <label>거래량 <input type="checkbox" name="checkbox1" id="checkbox1"></label>
                     <label>종가<input type="checkbox" name="checkbox2" id="checkbox2"></label>
                     <label>코스피<input type="checkbox" name="checkbox3" id="checkbox3"></label>
-                    <label>영업이익<input type="checkbox" name="checkbox4" id="checkbox4"></label>
+                    <!-- <label>영업이익<input type="checkbox" name="checkbox4" id="checkbox4"></label>
                     <label>매출액<input type="checkbox" name="checkbox5" id="checkbox5"></label>
-                    <label>개인/기관/외국인<input type="checkbox" name="checkbox6" id="checkbox6"></label>
+                    <label>개인/기관/외국인<input type="checkbox" name="checkbox6" id="checkbox6"></label> -->
                 </div>
             </div>
             <button id = "analysis">분석</button>

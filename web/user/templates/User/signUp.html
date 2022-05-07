@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,46 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <style>
-        hr{
-            position: absolute;
-            top: 252px;
-            left: 576px;
-            width: 300px;
-            border: 0.5px solid black;
-        }
-        .title{
-            position: absolute;
-            top: 216px;
-            left: 650px;
-            font-size: x-large;
-        }
-        .container{
-            position: absolute;
-            top: 275px;
-            left: 575px;
-            width: 300px;
-            /* border: 1px solid rgb(103, 158, 195); */
-            font-size: large;
-        }
-        button{
-            background-color:rgb(145, 191, 222);
-            width: 56px;
-            height: 35px;
-            border-radius:11px;
-            margin-left: 100px;
-            margin-top:11px; 
-        }
-        .col{
-            margin-top: 5px;
-            text-align: right;
-            float: left;
-        }
-        .row{
-            margin-left: 8px;
-            text-align: left;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'user/signUp.css' %}">
 </head>
 <body>
     {% include 'main/mainBar.html' %}

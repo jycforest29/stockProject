@@ -6,6 +6,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from .models import User
 from stock.models import Stock
+from django.views.decorators.cache import cache_control
 
 # Create your views here.
 highStocks = []
@@ -39,7 +40,7 @@ def findStockType(likes):
     midStocks = mid
     lowStocks = low
     
-
+@cache_control(no_cache = True, must_revalidate = True)
 def signUp(request):
     form = SignUpForm() 
     if request.method == 'POST':
@@ -57,6 +58,7 @@ def signUp(request):
             return redirect('index')
     return render(request, 'user/signUp.html', {'form':form})
 
+@cache_control(no_cache = True, must_revalidate = True)
 def signIn(request): 
     form = SignInForm() 
     if request.method == 'POST':
@@ -70,8 +72,10 @@ def signIn(request):
             likeStocks = Stock.objects.filter(likeUsers__in = [request.user.pk]).order_by('likeCount')            
             findStockType(likeStocks)
             return redirect('index')
+            
     return render(request, 'user/signIn.html', {'form':form})
 
+@cache_control(no_cache = True, must_revalidate = True)
 def signOut(request):
     logout(request)
     messages.success(request, '로그아웃 완료')
@@ -80,6 +84,7 @@ def signOut(request):
 def detailMyPage(request):
     return render(request, 'user/detailMyPage.html') 
 
+@cache_control(no_cache = True, must_revalidate = True)
 def editMyPage(request):
     if request.method == 'POST':
         pk = request.user.pk

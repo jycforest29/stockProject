@@ -4,9 +4,11 @@ from .models import Comment
 from post.models import Post
 from .forms import CommentForm, EditForm
 from django.utils import timezone
+from django.views.decorators.cache import cache_control
 
 # Create your views here.
 
+@cache_control(no_cache = True, must_revalidate = True)
 def newComment(request, postPk):
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -21,9 +23,11 @@ def newComment(request, postPk):
     else:
         raise Http404('코멘트 작성 메서드 에러') 
 
+@cache_control(no_cache = True, must_revalidate = True)
 def reComment(request, commentPk, postPk):
     return redirect('detailPost', postPk)
 
+@cache_control(no_cache = True, must_revalidate = True)
 def editComment(request, commentPk, postPk): 
     editForm = EditForm()
     post = Post.objects.get(pk = postPk)
@@ -42,6 +46,7 @@ def editComment(request, commentPk, postPk):
 
     return render(request, 'post/detailPost.html', {'post':post,'comments':comments, 'editForm':editForm, 'commentPk': commentPk})
 
+@cache_control(no_cache = True, must_revalidate = True)
 def deleteComment(request, commentPk, postPk):
     comment = Comment.objects.get(pk = commentPk)
     comment.delete()
@@ -50,6 +55,7 @@ def deleteComment(request, commentPk, postPk):
     post.save()
     return redirect('detailPost', postPk)  
 
+@cache_control(no_cache = True, must_revalidate = True)
 def likeComment(request, commentPk):
     if request.method == 'POST':
         comment = Comment.objects.get(pk = commentPk)
@@ -60,6 +66,6 @@ def likeComment(request, commentPk):
             comment.likeUsers.add(request.user)
             comment.likeCount += 1
         comment.save()
-        return redirect('detailPost', commentPk) 
+        return redirect('detailPost', comment.post.pk) 
     else:
         raise Http404('댓글 좋아요 메서드 에러')

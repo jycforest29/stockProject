@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,45 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <style>
-        hr{
-            position: absolute;
-            top: 252px;
-            left: 576px;
-            width: 300px;
-            border: 0.5px solid black;
-        }
-        button{
-            background-color:rgb(145, 191, 222);
-            width: 49px;
-            height: 35px;
-            border-radius:11px;
-            margin-left: 100px;
-            margin-top:11px; 
-        }
-        .title{
-            position: absolute;
-            top: 216px;
-            left: 650px;
-            font-size: x-large;
-        }
-        .container{
-            position: absolute;
-            top: 275px;
-            left: 600px;
-            width: 350px;
-            font-size: large;
-        }
-        .col{
-            margin-top: 5px;
-            text-align: right;
-            float: left;
-        }
-        .row{
-            margin-left: 8px;
-            text-align: left;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'user/editMyPage.css' %}">
 </head>
 <body >
     {% include 'main/mainBar.html' %}
