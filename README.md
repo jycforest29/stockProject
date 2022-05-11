@@ -1,31 +1,25 @@
 # stockProject
-주식 분석 웹사이트
-<br>
-계획: (금-오늘) 배포 - (토) 리팩토링 및 리드미, 기술블로그 작성 (일) 애널리스트 추천도 그래프에 추가 /분석 인덱스 추가 - stockinfo /포트폴리오 추가
 
 <h1> 프로젝트 소개</h1>
 인원: 1인 개발<br>
-개발 기간: 2-3주<br>
-배포방법: 미정<br>
+개발 기간: 24일<br>
+배포방법: pythonanywhere<br>
 주요 기능<br>
- 1. 백테스팅<br>
+ 1. 선택한 시작 날짜와 주식 종목에 대해 거래량, 코스피 지수, 종가 변화를 그래프로 나타내는 기능<br>
  2. 커뮤니티<br>
+ 3. 주식 종목 검색
 
 <h1> 사용한 기술</h1>
-front-end: html, css, js<br>
-back-end: django<br>
+프론트: html, css, js<br>
+백: django<br>
 개발 환경: visual studio code<br>
-db: mysql(직접 sql구문 작성보다는 orm으로 사용)<br>
+db: mysql<br>
 
 <h1> 사용한 오픈소스 및 데이터</h1>
 open api: yfinance<br>
 lib: pandas, numpy, matplotlib, mpld3, apscheduler등<br>
-데이터: krx - 주식 기본 정보<br>
+데이터: krx의 주식 기본 정보(.csv)<br>
 
 <h1>프로젝트 구조</h1>
-<h1>앱별 상세 기능 및 구현방법</h1>
-main - 홈, 검색 <br>
-stock - 주식 정보 및 분석<br>
-user - 회원 관련<br>
-post - 글 작성 관련<br>
-comment - 댓글 작성 관련
+![image](https://user-images.githubusercontent.com/103106183/167752119-d44912f8-c0ea-476d-a467-314e31d8bc83.png)
+
