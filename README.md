@@ -56,9 +56,6 @@ views.py: 판다스의 데이터프레임 활용해 데이터 정제 후 sklearn
 -게시글 화면<br>
 views.py: 게시글 수정/삭제, 댓글 수정/삭제, 대댓글 수정/삭제 구현
 ![detailPost](https://user-images.githubusercontent.com/103106183/167763776-0217a2e4-32bc-4fa0-9f56-2d4b0c2eb82c.png)<br>
--댓글 수정 화면<br>
-![editPost](https://user-images.githubusercontent.com/103106183/167763693-90f0f0a1-dc9b-4cec-86e7-4d4a3700e6d2.png)<hr>
-
 
 
 
