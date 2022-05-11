@@ -22,3 +22,4 @@ lib: pandas, numpy, matplotlib, mpld3, apscheduler등<br>
 
 <h1>프로젝트 설명</h1>
 ![image]('web\readmeImg\signUpPng.png')
+![화면 캡처 2022-05-11 112440](https://user-images.githubusercontent.com/103106183/167761313-6ad5db7e-6466-413b-97a4-6207286b07fd.png)
