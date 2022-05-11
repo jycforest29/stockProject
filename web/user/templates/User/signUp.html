@@ -32,9 +32,6 @@
             <div class = "row">
                 {% for field in form %}
                 {{field}}<br>
-                {% if field.errors %}
-                {{field.errors}}
-                {% endif %}
                 {% endfor %}
             </div><br>       
             <button>가입</button>

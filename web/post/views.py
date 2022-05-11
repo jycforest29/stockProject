@@ -1,9 +1,6 @@
 from django.shortcuts import render, redirect
-import yfinance as yf
-from matplotlib import pyplot as plt
-import pandas as pd
 from .forms import PostForm
-from comment.forms import CommentForm
+from comment.forms import CommentForm, ReCommentForm
 from stock.models import Stock
 from .models import Post
 from comment.models import Comment
@@ -13,16 +10,15 @@ from django.views.decorators.cache import cache_control
 
 # Create your views here.
 
+# 폼 활용
 def detailPost(request, postPk): 
     post = Post.objects.get(pk = postPk)
     commentForm = CommentForm()
-    userInPostLikes = False
+    reCommentForm = ReCommentForm()    
     comments = Comment.objects.filter(post = post)
-    if post.likeCount != 0:
-        if request.user in post.likeUsers.all():
-            userInPostLikes = True 
-    return render(request, 'post/detailPost.html', {'post':post, 'userInPostLikes':userInPostLikes, 'commentForm':commentForm, 'comments':comments})
+    return render(request, 'post/detailPost.html', {'post':post, 'commentForm':commentForm, 'reCommentForm':reCommentForm ,'comments':comments})
 
+# 폼 활용
 @cache_control(no_cache = True, must_revalidate = True)
 def newPost(request, stockCode):
     postForm = PostForm()
@@ -35,14 +31,12 @@ def newPost(request, stockCode):
             strategy = postForm.cleaned_data['strategy']
             author = request.user
             stock = stock
-            #  Field 'id' expected a number but got <SimpleLazyObject: 
             post = Post(title = title, content = content, author = author, stock = stock, strategy = strategy)
             post.save()
-            # post.save()는 필수? 
             return redirect('stockInfo', stockCode)
-    # 하나는 html에 필요한 변수, 하나는 매개변수 - 매개변수여서라기 보다는 newPost.html에서 필요해서
     return render(request, 'post/newPost.html', {'postForm':postForm, 'stock':stock})        
 
+# 폼 에러 제외 폼 활용
 @cache_control(no_cache = True, must_revalidate = True)
 def editPost(request, postPk):
     post = Post.objects.get(pk = postPk)
@@ -63,8 +57,7 @@ def editPost(request, postPk):
         post.strategy = strategyTmp
         post.updatedAt = timezone.now()
         post.save()
-        return redirect('detailPost', post.pk)
-       
+        return redirect('detailPost', post.pk)       
     return render(request, 'post/editPost.html',{'post':post})  
  
 @cache_control(no_cache = True, must_revalidate = True)
@@ -79,11 +72,11 @@ def likePost(request, postPk):
         post = Post.objects.get(pk = postPk)
         if request.user in post.likeUsers.all():
             post.likeUsers.remove(request.user)
-            post.likeCount -= 1
+            post.likeCount -= 1 
         else:
             post.likeUsers.add(request.user)
             post.likeCount += 1
         post.save()
         return redirect('detailPost', postPk)
     else:
-        raise Http404('포스트 좋아요 메서드 에러')
+        raise Http404('글 작성 좋아요 메서드 에러')

@@ -13,7 +13,7 @@ class SignUpForm(forms.Form):
     password1 = forms.CharField(widget = forms.PasswordInput,  label = '비밀번호')
     password2 = forms.CharField(widget = forms.PasswordInput,  label = '비밀번호 확인')
     email = forms.EmailField(widget=forms.EmailInput,label = '이메일')
-    strategy = forms.ChoiceField(widget=forms.Select(choices=strategyType), label = '투자 전략 타입')
+    strategy = forms.ChoiceField(widget=forms.Select(), choices=strategyType, label = '투자 전략 타입')
 
     def clean(self):
         cleaned_data = super().clean() 
@@ -22,7 +22,7 @@ class SignUpForm(forms.Form):
         password2 = cleaned_data.get('password2')
         email = cleaned_data.get('email')
         strategy = cleaned_data.get('strategy')
-        if username and password1 and password2 and email and strategy:
+        if username and password1 and password2 and email and strategy: 
             user = User.objects.filter(username = username).first()
             userByEmail = User.objects.filter(email = email).first()
             if user is None:
@@ -54,20 +54,3 @@ class SignInForm(forms.Form):
             else:
                 self.add_error('password', '아이디 존재하지 않음')
 
-# class MyPageForm(forms.Form):
-#     password1 = forms.CharField(widget = forms.PasswordInput,  label = '비밀번호')
-#     password2 = forms.CharField(widget = forms.PasswordInput,  label = '비밀번호 확인')
-#     email = forms.EmailField(widget=forms.EmailInput, label = '이메일')
-#     strategy = forms.ChoiceField(widget=forms.Select, choices=strategyType,label = '투자 전략 타입')
-
-#     def clean(self):
-#         cleaned_data = super().clean()         
-#         password1 = cleaned_data.get('password1')
-#         password2 = cleaned_data.get('password2') 
-#         email = cleaned_data.get('email')
-#         strategy = cleaned_data.get('strategy')
-#         if password1 and password2:
-#             if check_password(password1, make_password(password2)):
-#                 return 
-#             else:
-#                 self.add_error('password2', '비밀번호 확인이 비밀번호와 다름')

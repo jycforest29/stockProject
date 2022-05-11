@@ -11,11 +11,10 @@ strategyType = [
     ]
     
 class Post(models.Model):
-    # non-nullable field인데 일단
-    title = models.CharField(max_length=30, null = True, blank = True)
+    # non-nullable field인데 일단 null = True로 선언 , null = True, blank = True
+    title = models.CharField(max_length=30)
     content = models.TextField(max_length=330)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="postAuthor")
-    # non-nullable field인데 일단 null = True로 선언
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE, related_name="postStock")    
     strategy = models.CharField(max_length=3, choices=strategyType, default = "중립")
     createdAt = models.DateTimeField(auto_now_add=True)

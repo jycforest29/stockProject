@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" type="text/css" href="{% static 'post/editPost.css' %}">
-    <!-- <script src="//code.jquery.com/jquery-3.3.1.min.js"></script> -->
 </head>
 <body>    
     {% include 'main/mainBar.html' %}
@@ -53,8 +52,18 @@
                 </div><br>
             </div>             
             <button id = "mdfBtn">수정</button>
+            {% if editTError %}
+            <script>
+                alert("{{editTError}}");
+            </script>
+            {% endif %}
+            {% if editCError %}
+            <script>
+                alert("{{editCError}}");
+            </script>
+            {% endif %}
             <!-- ------------------------------------modal----------------------------------- -->
-            <div id="modal">
+            <!-- <div id="modal">
                 <div id="box">
                     {% if editTError %}  
                     <div class="title">{{editTError}}</div>
@@ -103,7 +112,7 @@
                     })       
                 </script>
                 {% endif %}
-            {% endif %}
+            {% endif %} -->
         </div>        
     </form> 
 </body>

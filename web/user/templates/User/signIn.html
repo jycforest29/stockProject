@@ -8,7 +8,7 @@
     <title>Document</title>
     <link rel="stylesheet" type="text/css" href="{% static 'user/signIn.css' %}">
 </head>
-<body onload = "noBack();" onpageshow = "if(event.persisted) noBack();", onunload = "">
+<body>
     {% include 'main/mainBar.html' %}
     <span class = "title">로그인</span>
     <hr>    
@@ -38,13 +38,5 @@
             <button>로그인</button><br>    
         </div>   
     </form>  
-    <script>
-        // function BtnClick(link){
-        //     location.replace(link);
-        // }
-        function noBack(){
-            window.history.forward();
-        }
-    </script>
 </body>
 </html>

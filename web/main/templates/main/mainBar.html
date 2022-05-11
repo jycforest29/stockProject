@@ -1,7 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head> 
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,14 +10,14 @@
 </head>
 <body>
     <div id="mainBar">
-        <span id = "web"><a href="{% url 'index' %}">주식분석웹사이트</a></span>
-        {% if user.is_authenticated %}      
-            <span id = "sign">{{request.user.username}}님 <a href="{% url 'signOut' %}">로그아웃</a></span><br>
-            <!-- <span id = "evaluate"><a href="{% url 'evaluate' %}">포트폴리오</a></span> -->
-            <span id = "myPage"><a href="{% url 'detailMyPage' %}">마이페이지</a></span>        
-        {% else %}
-            <span class = "sign"><a href="{% url 'signIn' %}">로그인</a></span><br> 
-        {% endif %}
+    <span id = "webTitle"><a href="{% url 'index' %}">주식분석웹사이트</a></span>
+    {% if user.is_authenticated %}      
+        <span class = "sign">{{request.user.username}}님 <a href="{% url 'signOut' %}">로그아웃</a></span><br>
+        <!-- <span id = "evaluate"><a href="{% url 'evaluate' %}">포트폴리오</a></span> -->
+        <span id = "myPage"><a href="{% url 'detailMyPage' %}">마이페이지</a></span>        
+    {% else %}
+        <span class = "sign"><a href="{% url 'signIn' %}">로그인</a></span><br> 
+    {% endif %}
      </div>    
 </body>
 </html>

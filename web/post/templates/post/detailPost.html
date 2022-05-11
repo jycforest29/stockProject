@@ -46,7 +46,7 @@
   {% else %}
     <form action="{% url 'likePost' post.pk %}" method="post">
       {% csrf_token %}
-      {% if userInPostLikes %} 
+      {% if request.user in post.likeUsers.all %} 
       <button class = "likeCancelBtn">좋아요 취소</button>
       {% else %}
       <button class = "mdfBtn">좋아요</button>
@@ -68,7 +68,7 @@
       {% endfor %}
       <button class = "cmtWriteBtn">작성</button>
     </form>
-    {% endif %}
+    {% endif %} 
     <hr id = "cmtLine">
 
     <!-- 댓글들 -->
@@ -76,55 +76,102 @@
     <div>
       <!-- 글 작성자와 댓글 작성자가 같을 때 -->
       {% if comment.author == post.author %}
-      <span class="commenter">작성자</span>      
+        <span class="commenter">작성자</span>      
       {% else %}
-      <span class="commenter">{{comment.author}}</span>
+        <span class="commenter">{{comment.author}}</span>
       {% endif %}
       <span class="commenter">({{comment.author.strategy}})</span>
       <!-- 댓글 수정시 -->
       {% if editForm and commentPk == comment.pk %}
-      <div id="editForm">
-        <form action="{% url 'editComment' comment.pk post.pk %}" method="post">
-          {% csrf_token %}
-          {% for field in editForm %}
-            <input type="{{field.widget}}" value = "{{comment.content}}" maxlength="50" name = "editCmtValue" class = "editCmtCss">
-          {% endfor %}
-          <button class = "cmtWriteBtn"> 수정</button>
-        </form>
-      </div>
+        <div id="editForm">
+          <form action="{% url 'editComment' comment.pk post.pk %}" method="post">
+            {% csrf_token %}
+            {% for field in editForm %}
+              <input type="{{field.widget}}" value = "{{comment.content}}" maxlength="50" name = "editCmtValue" class = "editCmtCss">
+            {% endfor %}
+            <button class = "cmtWriteBtn"> 수정</button>
+          </form>
+        </div>
       {% else %}
-      <!-- 댓글 수정 x시 -->
-      {{comment.content}}
+        <!-- 댓글 수정 x시 -->
+        {{comment.content}}
         <!-- 댓글 작성자가 현재 로그인한 유저일 때 -->
         {% if comment.author == request.user %}
           <a href="{% url 'editComment' comment.pk post.pk %}" ><button class = "cmtBtn">수정</button> </a>
           <a href="{% url 'deleteComment' comment.pk post.pk %}"><button class = "cmtBtn">삭제</button></a>      
         {% else %}
-        <div>
-          <form action="{% url 'likeComment' comment.pk %}" method="post">
-            {% csrf_token %}
-            <button class = "cmtBtn">좋아요 {{comment.likeCount}}</button>
-          </form>
-        </div>
+          <div>
+            <form action="{% url 'likeComment' comment.pk %}" method="post">
+              {% csrf_token %}
+              {% if request.user in comment.likeUsers.all %}
+              <button class = "cmtBtn">좋아요 취소{{comment.likeCount}}</button>
+              {% else %}
+              <button class = "cmtBtn">좋아요 {{comment.likeCount}}</button>
+              {% endif %}
+            </form>
+          </div>
+        {% endif %}
         <button class = "cmtBtn" id = "{{comment.pk}}">대댓글</button>
         {% if comment.createdAt == comment.updatedAt %}
-        {{comment.createdAt}}
+          {{comment.createdAt}}
         {% else %}
-        {{comment.updatedAt}}({{comment.createdAt}}))
-        {% endif %}
-        {% endif %}      
+          {{comment.updatedAt}}({{comment.createdAt}}))
+        {% endif %}            
         </div><br>
       {% endif %}
-    
     <hr class = "cmtPerLine">
+    {% for recomment in comment.reComment.all %}
+        <!-- 글 작성자와 대댓글 작성자가 같을 때 -->
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ㄴ>
+        {% if recomment.author == post.author %}
+          <span class="commenter">작성자</span>      
+        {% else %}
+          <span class="commenter">{{recomment.author}}</span>
+        {% endif %}
+        <span class="commenter">({{recomment.author.strategy}})</span>
+        {% if editReForm and reCommentPk == recomment.pk %}
+        <div id="editForm">
+          <form action="{% url 'editReComment' recomment.pk post.pk %}" method="post">
+            {% csrf_token %}
+            {% for field in editReForm %}
+              <input type="{{field.widget}}" value = "{{recomment.content}}" maxlength="50" name = "editReCmtValue" class = "editCmtCss">
+            {% endfor %}
+            <button class = "cmtWriteBtn"> 수정</button>
+          </form>
+        </div>
+        {% else %}
+        {{recomment.content}}
+        <!-- 대댓글 작성자가 현재 로그인한 유저일 때 -->
+        {% if recomment.author == request.user %}
+          <a href="{% url 'editReComment' recomment.pk post.pk %}" ><button class = "cmtBtn">수정</button> </a>
+          <a href="{% url 'deleteReComment' recomment.pk post.pk %}"><button class = "cmtBtn">삭제</button></a>      
+        {% else %}
+          <div>
+            <form action="{% url 'likeReComment' recomment.pk post.pk %}" method="post">
+              {% csrf_token %}
+              {% if request.user in recomment.likeUsers.all %}
+              <button class = "cmtBtn">좋아요 취소{{recomment.likeCount}}</button>
+              {% else %}
+              <button class = "cmtBtn">좋아요 {{recomment.likeCount}}</button>
+              {% endif %}
+            </form>
+          </div>
+        {% endif %}
+        {% if recomment.createdAt == recomment.updatedAt %}
+          {{recomment.createdAt}}
+        {% else %}
+          {{recomment.updatedAt}}({{recomment.createdAt}}))
+        {% endif %} 
+        {% endif %}
+        <hr class = "cmtPerLine">
+        {% endfor %}
     <div id="recmt{{comment.pk}}"></div>   
     <script>
-      const recmt = document.getElementById("recmt{{comment.pk}}");
-      const cmtBtn = document.getElementById("{{comment.pk}}");
-      cmtBtn.addEventListener("click", function(){     
-        recmt.innerHTML += '<form action="{% url "reComment" post.pk comment.pk %}" method="post">{% csrf_token %}{% for field in commentForm %}<span id = "cmt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ㄴ>{{field.label}}</span> {{field}}{% if field.errors %}{{field.errors}}{% endif %} {% endfor %}<button id = "cmtWriteBtn">작성</button></form><hr class = "cmtPerLine">'
+      document.getElementById("{{comment.pk}}").addEventListener("click", function(){     
+        document.getElementById("recmt{{comment.pk}}").innerHTML += '<form action="{% url "newReComment" post.pk comment.pk %}" method="post">{% csrf_token %}{% for field in reCommentForm %}<span id = "cmt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ㄴ>{{field.label}}</span> {{field}}{% if field.errors %}{{field.errors}}{% endif %} {% endfor %}<button id = "cmtWriteBtn">작성</button></form><hr class = "cmtPerLine">'
       })
     </script> 
+    
     {% endfor %} 
     
     {% if cmtError %}

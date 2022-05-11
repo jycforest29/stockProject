@@ -6,7 +6,6 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Document</title>
-   <link rel="stylesheet" type = "text.css" href="{% static 'css/index.css' %}">
    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
    <script type="text/javascript" src="http://mpld3.github.io/js/mpld3.v0.1.js"></script>
    <link rel="stylesheet" type="text/css" href="{% static 'main/index.css' %}">
@@ -15,7 +14,7 @@
    {% include 'main/mainBar.html' %}
    <form action="{% url 'search' %}" method="get">
       <div class="searchBar">
-         <input type="text" class = "keyword" name = "keyword"> 
+         <input type="text" class = "keyword" name = "keyword" value = "{{keyword|default_if_none:''}}"> 
          <button class="btn">검색</button>
       </div>
    </form>   
@@ -43,42 +42,69 @@
       </div>
       <div id = "userLike">
          {% if user.is_authenticated %}
-         <span class = "rankingTitle">{{user.username}}님이 좋아요 한 주식들</span><br>
-         <div class = "ranking">
-            <span id = "fontColor1">위험형</span><br>
-            {% if highStocks %}
-               {% for stock in highStocks %}
-               &nbsp;<a href="{% url 'stockInfo' stock.stockCode %}">{{stock.stockName}}({{stock.stockCode}})</a><br>
-               {% endfor %}
-            {% endif %}
-            <span id = "fontColor2">중립형</span><br>
-            {% if midStocks %}
-               {% for stock in midStocks %}
-               &nbsp;<a href="{% url 'stockInfo' stock.stockCode %}">{{stock.stockName}}({{stock.stockCode}})</a><br>
-               {% endfor %}
-            {% endif %}
-            <span id = "fontColor3">안정형</span><br>
-            {% if lowStocks %}
-               {% for stock in lowStocks %}
-               &nbsp;<a href="{% url 'stockInfo' stock.stockCode %}">{{stock.stockName}}({{stock.stockCode}})</a><br>
-               {% endfor %}
-            {% endif %}         
+         <span class = "rankingTitle">{{user.username}}님이 좋아요 한 주식들</span>
+         {% if kospiResult > 0 %}
+         <span class = "red">{{kospiResult}}%({{kospiIdxValue}}p)</span>
+         {% elif kospiResult < 0 %}
+         <span class = "blue">{{kospiResult}}%({{kospiIdxValue}}p)</span>
+         {% else %}
+         {{kospiResult}}%({{kospiIdxValue}}p)
+         {% endif %}
+         <span id = "kospiDate">({{start}}-{{endMid}})<br></span>
+         <div id = "userRanking">
+            <div id="ranking1">
+               <span id = "fontColor1">위험형</span><br>
+               {% if highStocks %}
+                  {% for stock, idx in lowStocks %}
+                  &nbsp;<a href="{% url 'stockInfo' stock.stockCode %}">{{stock.stockName}}</a>
+                  {% if idx > 0 %}
+                  <span class = "red">{{idx}}%</span>
+                  {% elif idx < 0 %}               
+                  <span class="blue">{{idx}}%</span>
+                  {% else %}
+                  {{idx}}%
+                  {% endif %}
+                  <br>
+                  {% endfor %}
+               {% endif %}
+            </div>
+            <div id="ranking2">
+               <span id = "fontColor2">중립형</span><br>
+               {% if midStocks %}
+                  {% for stock, idx in lowStocks %}
+                  &nbsp;<a href="{% url 'stockInfo' stock.stockCode %}">{{stock.stockName}}</a>
+                  {% if idx > 0 %}
+                  <span class = "red">{{idx}}%</span>
+                  {% elif idx < 0 %}               
+                  <span class="blue">{{idx}}%</span>
+                  {% else %}
+                  {{idx}}%
+                  {% endif %}
+                  <br>
+                  {% endfor %}
+               {% endif %}
+            </div>
+            <div id="ranking3">
+               <span id = "fontColor3">안정형</span><br>
+               {% if lowStocks %}
+                  {% for stock, idx in lowStocks %}
+                  &nbsp;<a href="{% url 'stockInfo' stock.stockCode %}">{{stock.stockName}}</a>
+                  {% if idx > 0 %}
+                  <span class = "red">{{idx}}%</span>
+                  {% elif idx < 0 %}               
+                  <span class="blue">{{idx}}%</span>
+                  {% else %}
+                  {{idx}}%
+                  {% endif %}                  
+                  <br>
+                  {% endfor %}
+               {% endif %}         
+            </div>
          {% endif %} 
          </div>
       </div>      
    </div><br>
-   <object data="C:\Users\USER\Desktop\stockProject\web\main\templates\main\likeStockAnalysis.html" type="text/html"  width="500" height = "500"></object>>
-   <!-- <script>
-      history.pushState()
-   </script> -->
-   <!-- <div id="likePlot"></div> -->
-   <!-- <script>        
-      const likePlot = document.getElementById("likePlot");
-      var pltTag = '<style></style><div id="fig_el1453221265078047521480342158"></div><script>function mpld3_load_lib(url, callback){var s = document.createElement("script");s.src = url;s.async = true;s.onreadystatechange = s.onload = callback;s.onerror = function(){console.warn("failed to load library " + url);};document.getElementsByTagName("head")[0].appendChild(s);}if(typeof(mpld3) !== "undefined" && mpld3._mpld3IsLoaded){!function(mpld3){mpld3.draw_figure("fig_el1453221265078047521480342158", {"width": 1100.0, "height": 500.0, "axes": [{"bbox": [0.125, 0.10999999999999999, 0.775, 0.77], "xlim": [0.0, 1.0], "ylim": [-100.0, 100.0], "xdomain": [0.0, 1.0], "ydomain": [-100.0, 100.0], "xscale": "linear", "yscale": "linear", "axes": [{"position": "bottom", "nticks": 6, "tickvalues": null, "tickformat_formatter": "", "tickformat": null, "scale": "linear", "fontsize": 10.0, "grid": {"gridOn": false}, "visible": true}, {"position": "left", "nticks": 9, "tickvalues": null, "tickformat_formatter": "", "tickformat": null, "scale": "linear", "fontsize": 10.0, "grid": {"gridOn": false}, "visible": true}], "axesbg": "#FFFFFF", "axesbgalpha": null, "zoomable": true, "id": "el145322126507537024", "lines": [], "paths": [{"data": "data02", "xindex": 0, "yindex": 1, "coordinates": "axes", "pathcodes": ["M", "L", "S", "L", "S", "L", "S", "L", "S", "Z"], "id": "el145322126528961984", "dasharray": "none", "alpha": 0.8, "facecolor": "rgba(255, 255, 255, 0.8)", "edgecolor": "rgba(204, 204, 204, 0.8)", "edgewidth": 1.0, "zorder": 1000000.0}], "markers": [], "texts": [{"text": "SK\ubcf4\ud1b5\uc8fc(-0.0%)", "position": [0.9, -0.0], "coordinates": "data", "h_anchor": "start", "v_baseline": "auto", "rotation": -0.0, "fontsize": 10.0, "color": "#000000", "alpha": 1, "zorder": 3, "id": "el145322126528959488"}, {"text": "%", "position": [-0.06249592701205604, 0.5], "coordinates": "axes", "h_anchor": "middle", "v_baseline": "auto", "rotation": -90.0, "fontsize": 10.0, "color": "#000000", "alpha": 1, "zorder": 3, "id": "el145322126528703072"}], "collections": [{"offsets": "data01", "xindex": 0, "yindex": 1, "paths": [[[[0.0, 1.0], [1.0, 1.0]], ["M", "L"]]], "pathtransforms": [], "alphas": [null], "edgecolors": ["#1F77B4"], "facecolors": [], "edgewidths": [1.5], "offsetcoordinates": "display", "pathcoordinates": "data", "zorder": 2, "id": "el145322126529041600"}, {"offsets": "data01", "xindex": 2, "yindex": 0, "paths": [[[[0.0, -0.5], [0.13260155, -0.5], [0.25978993539242673, -0.44731684579412084], [0.3535533905932738, -0.3535533905932738], [0.44731684579412084, -0.25978993539242673], [0.5, -0.13260155], [0.5, 0.0], [0.5, 0.13260155], [0.44731684579412084, 0.25978993539242673], [0.3535533905932738, 0.3535533905932738], [0.25978993539242673, 0.44731684579412084], [0.13260155, 0.5], [0.0, 0.5], [-0.13260155, 0.5], [-0.25978993539242673, 0.44731684579412084], [-0.3535533905932738, 0.3535533905932738], [-0.44731684579412084, 0.25978993539242673], [-0.5, 0.13260155], [-0.5, 0.0], [-0.5, -0.13260155], [-0.44731684579412084, -0.25978993539242673], [-0.3535533905932738, -0.3535533905932738], [-0.25978993539242673, -0.44731684579412084], [-0.13260155, -0.5], [0.0, -0.5]], ["M", "C", "C", "C", "C", "C", "C", "C", "C", "Z"]]], "pathtransforms": [[8.333333333333334, 0.0, 0.0, 8.333333333333334, 0.0, 0.0]], "alphas": [null], "edgecolors": ["#00FFFF"], "facecolors": ["#00FFFF"], "edgewidths": [1.0], "offsetcoordinates": "data", "pathcoordinates": "display", "zorder": 1, "id": "el145322126528960544"}], "images": [], "sharex": [], "sharey": []}], "data": {"data01": [[0.0, 0.0, 0.9]], "data02": [[0.982078853046595, 0.9531024531024532], [0.988595633756924, 0.9531024531024532], [0.9918540241120887, 0.9531024531024532], [0.9918540241120887, 0.9603174603174605], [0.9918540241120887, 0.9747474747474747], [0.9918540241120887, 0.9819624819624819], [0.988595633756924, 0.9819624819624819], [0.982078853046595, 0.9819624819624819], [0.9788204626914304, 0.9819624819624819], [0.9788204626914304, 0.9747474747474747], [0.9788204626914304, 0.9603174603174605], [0.9788204626914304, 0.9531024531024532], [0.982078853046595, 0.9531024531024532]]}, "id": "el145322126507804752", "plugins": [{"type": "reset"}, {"type": "zoom", "button": true, "enabled": false}, {"type": "boxzoom", "button": true, "enabled": false}]});}(mpld3);}else if(typeof define === "function" && define.amd){require.config({paths: {d3: "https://d3js.org/d3.v5"}});require(["d3"], function(d3){window.d3 = d3;mpld3_load_lib("https://mpld3.github.io/js/mpld3.v0.5.7.js", function(){mpld3.draw_figure("fig_el1453221265078047521480342158", {"width": 1100.0, "height": 500.0, "axes": [{"bbox": [0.125, 0.10999999999999999, 0.775, 0.77], "xlim": [0.0, 1.0], "ylim": [-100.0, 100.0], "xdomain": [0.0, 1.0], "ydomain": [-100.0, 100.0], "xscale": "linear", "yscale": "linear", "axes": [{"position": "bottom", "nticks": 6, "tickvalues": null, "tickformat_formatter": "", "tickformat": null, "scale": "linear", "fontsize": 10.0, "grid": {"gridOn": false}, "visible": true}, {"position": "left", "nticks": 9, "tickvalues": null, "tickformat_formatter": "", "tickformat": null, "scale": "linear", "fontsize": 10.0, "grid": {"gridOn": false}, "visible": true}], "axesbg": "#FFFFFF", "axesbgalpha": null, "zoomable": true, "id": "el145322126507537024", "lines": [], "paths": [{"data": "data02", "xindex": 0, "yindex": 1, "coordinates": "axes", "pathcodes": ["M", "L", "S", "L", "S", "L", "S", "L", "S", "Z"], "id": "el145322126528961984", "dasharray": "none", "alpha": 0.8, "facecolor": "rgba(255, 255, 255, 0.8)", "edgecolor": "rgba(204, 204, 204, 0.8)", "edgewidth": 1.0, "zorder": 1000000.0}], "markers": [], "texts": [{"text": "SK\ubcf4\ud1b5\uc8fc(-0.0%)", "position": [0.9, -0.0], "coordinates": "data", "h_anchor": "start", "v_baseline": "auto", "rotation": -0.0, "fontsize": 10.0, "color": "#000000", "alpha": 1, "zorder": 3, "id": "el145322126528959488"}, {"text": "%", "position": [-0.06249592701205604, 0.5], "coordinates": "axes", "h_anchor": "middle", "v_baseline": "auto", "rotation": -90.0, "fontsize": 10.0, "color": "#000000", "alpha": 1, "zorder": 3, "id": "el145322126528703072"}], "collections": [{"offsets": "data01", "xindex": 0, "yindex": 1, "paths": [[[[0.0, 1.0], [1.0, 1.0]], ["M", "L"]]], "pathtransforms": [], "alphas": [null], "edgecolors": ["#1F77B4"], "facecolors": [], "edgewidths": [1.5], "offsetcoordinates": "display", "pathcoordinates": "data", "zorder": 2, "id": "el145322126529041600"}, {"offsets": "data01", "xindex": 2, "yindex": 0, "paths": [[[[0.0, -0.5], [0.13260155, -0.5], [0.25978993539242673, -0.44731684579412084], [0.3535533905932738, -0.3535533905932738], [0.44731684579412084, -0.25978993539242673], [0.5, -0.13260155], [0.5, 0.0], [0.5, 0.13260155], [0.44731684579412084, 0.25978993539242673], [0.3535533905932738, 0.3535533905932738], [0.25978993539242673, 0.44731684579412084], [0.13260155, 0.5], [0.0, 0.5], [-0.13260155, 0.5], [-0.25978993539242673, 0.44731684579412084], [-0.3535533905932738, 0.3535533905932738], [-0.44731684579412084, 0.25978993539242673], [-0.5, 0.13260155], [-0.5, 0.0], [-0.5, -0.13260155], [-0.44731684579412084, -0.25978993539242673], [-0.3535533905932738, -0.3535533905932738], [-0.25978993539242673, -0.44731684579412084], [-0.13260155, -0.5], [0.0, -0.5]], ["M", "C", "C", "C", "C", "C", "C", "C", "C", "Z"]]], "pathtransforms": [[8.333333333333334, 0.0, 0.0, 8.333333333333334, 0.0, 0.0]], "alphas": [null], "edgecolors": ["#00FFFF"], "facecolors": ["#00FFFF"], "edgewidths": [1.0], "offsetcoordinates": "data", "pathcoordinates": "display", "zorder": 1, "id": "el145322126528960544"}], "images": [], "sharex": [], "sharey": []}], "data": {"data01": [[0.0, 0.0, 0.9]], "data02": [[0.982078853046595, 0.9531024531024532], [0.988595633756924, 0.9531024531024532], [0.9918540241120887, 0.9531024531024532], [0.9918540241120887, 0.9603174603174605], [0.9918540241120887, 0.9747474747474747], [0.9918540241120887, 0.9819624819624819], [0.988595633756924, 0.9819624819624819], [0.982078853046595, 0.9819624819624819], [0.9788204626914304, 0.9819624819624819], [0.9788204626914304, 0.9747474747474747], [0.9788204626914304, 0.9603174603174605], [0.9788204626914304, 0.9531024531024532], [0.982078853046595, 0.9531024531024532]]}, "id": "el145322126507804752", "plugins": [{"type": "reset"}, {"type": "zoom", "button": true, "enabled": false}, {"type": "boxzoom", "button": true, "enabled": false}]});});});}else{mpld3_load_lib("https://d3js.org/d3.v5.js", function(){mpld3_load_lib("https://mpld3.github.io/js/mpld3.v0.5.7.js", function(){mpld3.draw_figure("fig_el1453221265078047521480342158", {"width": 1100.0, "height": 500.0, "axes": [{"bbox": [0.125, 0.10999999999999999, 0.775, 0.77], "xlim": [0.0, 1.0], "ylim": [-100.0, 100.0], "xdomain": [0.0, 1.0], "ydomain": [-100.0, 100.0], "xscale": "linear", "yscale": "linear", "axes": [{"position": "bottom", "nticks": 6, "tickvalues": null, "tickformat_formatter": "", "tickformat": null, "scale": "linear", "fontsize": 10.0, "grid": {"gridOn": false}, "visible": true}, {"position": "left", "nticks": 9, "tickvalues": null, "tickformat_formatter": "", "tickformat": null, "scale": "linear", "fontsize": 10.0, "grid": {"gridOn": false}, "visible": true}], "axesbg": "#FFFFFF", "axesbgalpha": null, "zoomable": true, "id": "el14532212650753 0.9819624819624819], [0.982078853046595, 0.9819624819624819], [0.9788204626914304, 0.9819624819624819], [0.9788204626914304, 0.9747474747474747], [0.9788204626914304, 0.9603174603174605], [0.9788204626914304, 0.9531024531024532], [0.982078853046595, 0.9531024531024532]]}, "id": "el145322126507804752", "plugins": [{"type": "reset"}, {"type": "zoom", "button": true, "enabled": false}, {"type": "boxzoom", "button": true, "enabled": false}]});})});}</script>'
-      // console.log(pltTag); 
-      likePlot.innerHTML += pltTag         
-      // mpld3.draw_figure("likePlot", pltTag);
-   </script>          -->
+   
 </body>
 </html>
 

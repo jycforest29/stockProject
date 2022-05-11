@@ -31,7 +31,11 @@
                 {% endif %}                
                 <br> 
                 {% if field.errors %}
-                {{field.errors}} 
+                {% for error in field.errors %}
+                <script>
+                    alert('{{error}}');
+                </script>
+                {% endfor %}
                 {% endif %}
             {% endfor %}
             <button class = "postWrite">작성</button>
