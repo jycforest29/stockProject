@@ -21,4 +21,4 @@ lib: pandas, numpy, matplotlib, mpld3, apscheduler등<br>
 데이터: krx의 주식 기본 정보(.csv)<br>
 
 <h1>프로젝트 설명</h1>
-![image]('loginPng.png')
+![image]('web\readmeImg\signUpPng.png')
