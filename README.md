@@ -35,29 +35,29 @@ views.py: <br>
 -회원정보<br>
 ![userInfo](https://user-images.githubusercontent.com/103106183/167763248-c1ca8926-4c50-4a61-849a-5f10ed46b1a2.png)<br>
 -회원정보 수정<br>
-![mdfUserInfo](https://user-images.githubusercontent.com/103106183/167763496-5c70fced-f53c-40f9-8b05-c08eb49a7208.png)<br><br><br>
-db)
+![mdfUserInfo](https://user-images.githubusercontent.com/103106183/167763496-5c70fced-f53c-40f9-8b05-c08eb49a7208.png)<hr>
+db)<br>
 -mysql 주식 정보<br>
-![stockInfoMysql](https://user-images.githubusercontent.com/103106183/167763332-1ddf43d4-23ff-4d65-b523-f2c773a86cc6.png)<br><br><br>
+![stockInfoMysql](https://user-images.githubusercontent.com/103106183/167763332-1ddf43d4-23ff-4d65-b523-f2c773a86cc6.png)<hr>
 홈)<br>
 -로그인 후 홈 화면<br>
 views.py: apscheduler 통해 백그라운드에서 5분에 한번씩 좋아요 상위 5개 종목, 조회 상위 5개 종목 갱신<br>
 ![index](https://user-images.githubusercontent.com/103106183/167763635-06bd1bce-8db7-4703-a054-60c9008e6a46.png)<br>
 -검색<br>
-![search](https://user-images.githubusercontent.com/103106183/167763456-5b849925-7e0f-4289-9c70-52740f27efab.png)<br><br><br>
+![search](https://user-images.githubusercontent.com/103106183/167763456-5b849925-7e0f-4289-9c70-52740f27efab.png)<hr>
 주식)<br>
 -주식 기본 정보<br>
 views.py: 게시글 중 좋아요 5개 이상일 시 인기글에 포함, 페이지네이션, 분석탭의 경우 상장일 이후부터 시작 날짜 선택 가능하게 함<br>
 ![stockInfo](https://user-images.githubusercontent.com/103106183/167763362-6151232a-c9f3-4d95-b24e-8d580a137a3c.png)<br>
 -주식 기본 정보에서 분석탭 사용한 결과<br>
 views.py: 판다스의 데이터프레임 활용해 데이터 정제 후 sklearn의 maxabsscaler로 데이터 전처리. 이후 matplotlib으로 데이터 시각화 <br>
-![indexResult](https://user-images.githubusercontent.com/103106183/167763609-3253a572-6be0-4a96-8631-3205e0cb606a.png)<br><br><br>
+![indexResult](https://user-images.githubusercontent.com/103106183/167763609-3253a572-6be0-4a96-8631-3205e0cb606a.png)<hr>
 게시글)<br>
 -게시글 화면<br>
 views.py: 게시글 수정/삭제, 댓글 수정/삭제, 대댓글 수정/삭제 구현
 ![detailPost](https://user-images.githubusercontent.com/103106183/167763776-0217a2e4-32bc-4fa0-9f56-2d4b0c2eb82c.png)<br>
 -댓글 수정 화면<br>
-![editPost](https://user-images.githubusercontent.com/103106183/167763693-90f0f0a1-dc9b-4cec-86e7-4d4a3700e6d2.png)<br><br><br>
+![editPost](https://user-images.githubusercontent.com/103106183/167763693-90f0f0a1-dc9b-4cec-86e7-4d4a3700e6d2.png)<hr>
 
 
 
