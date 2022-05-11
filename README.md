@@ -48,8 +48,6 @@ db)<br>
 ![detailPost](https://user-images.githubusercontent.com/103106183/167763776-0217a2e4-32bc-4fa0-9f56-2d4b0c2eb82c.png)<br>
 -댓글 수정 화면<br>
 ![editPost](https://user-images.githubusercontent.com/103106183/167763693-90f0f0a1-dc9b-4cec-86e7-4d4a3700e6d2.png)<br>
--답글 수정 화면<br>
-![editReComment](https://user-images.githubusercontent.com/103106183/167763665-f5b0a0eb-5150-4344-8ae0-77b2a7a4aa63.png)<br>
 
 
 
