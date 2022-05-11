@@ -20,6 +20,5 @@ open api: yfinance<br>
 lib: pandas, numpy, matplotlib, mpld3, apscheduler등<br>
 데이터: krx의 주식 기본 정보(.csv)<br>
 
-<h1>프로젝트 구조</h1>
-![image](https://user-images.githubusercontent.com/103106183/167752119-d44912f8-c0ea-476d-a467-314e31d8bc83.png)
-
+<h1>프로젝트 설명</h1>
+![image]('/loginPng.png')
