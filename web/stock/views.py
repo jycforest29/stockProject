@@ -92,7 +92,7 @@ def indexAnalysis(checkbox, stockCode, start):
     # 체크박스에 체크된 값만 그래프에 표시
     checkIdxTmp = checkIdx[:]
     checkNameTmp = checkName[:]
-    i = 0
+    i = 0 
     j = 0
     while i < 3:
         if checkbox[j] == None:
