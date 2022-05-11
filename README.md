@@ -4,6 +4,7 @@
 인원: 1인 개발<br>
 개발 기간: 24일<br>
 배포방법: pythonanywhere(오늘내로 예정)<br>
+개요: 주식 커뮤니티 사이트<br>
 주요 기능<br>
  1. 선택한 시작 날짜와 주식 종목에 대해 거래량, 코스피 지수, 종가 변화를 그래프로 나타내는 기능<br>
  2. 커뮤니티<br>
@@ -22,6 +23,7 @@ lib: pandas, numpy, matplotlib, mpld3, apscheduler등<br>
 
 <h1>프로젝트 설명</h1>
 회원)<br>
+
 -회원가입<br>
 models.py: 장고 abstractUser 상속 후 이메일 필드 오버라이드, 투자 전략 필드 추가<br>
 views.py: 회원가입 폼을 통한 에러 관리<br>
